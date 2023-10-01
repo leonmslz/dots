@@ -2,46 +2,46 @@
 /* Styling for Waybar */
 
 * {
-    margin: 0.1em;
-    margin-left: 0.1em;
-    padding: 0.1em;
-    font-family: "JetBrains Mono", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
+	margin: 0.1em;
+	margin-left: 0.1em;
+	padding: 0.1em;
+	font-family: "JetBrains Mono", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+	font-size: 14px;
 }
 
 window#waybar {
-    background: #2d353b;
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-    opacity: 0.8;
+	background: #2d353b;
+	border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+	opacity: 0.8;
 }
 
 button {
-    border-radius:    5px;
+	border-radius:    5px;
 }
 
 #workspaces button {
-             /* top    |  right  |  bottom |  left */
-    padding:    0.2em     0.5em     0.4em     0.5em;
-    color:      black;
-    background: #95d5b2;
-    box-shadow: inset 0 -5px #40916c;
-             /* width | style | color */
-    border:     0.1em   solid  #40916c;
+			 /* top    |  right  |  bottom |  left */
+	padding:    0.4em     0.5em     0.5em     0.5em;
+	color:      black;
+	background: #95d5b2;
+	box-shadow: inset 0 -5px #40916c;
+			 /* width | style | color */
+	border:     0.1em   solid  #40916c;
 }
 
 #workspaces button:hover {
-    opacity: 0.6;
+	opacity: 0.6;
+}
+
+#workspaces button.active {
+	color: white;
 }
 
 #clock {
-    color: white;
+	color: white;
 }
 
 #custom-logout {
-    padding: 0.8em 0.2em 1em 0.2em;
-    background: #ff9500;
-    box-shadow: inset 0 -5px #f94144;
-    border:     0.1em solid #f94144;
-    color: black;
-    border-radius: 5px;
+	font-size: 1.3em;
+	color: #FC3E3E;
 }
