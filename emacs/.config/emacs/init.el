@@ -449,7 +449,7 @@
 
   (define-key term-mode-map (kbd "M-x") 'execute-extended-command)
 
-  (options-group-disable-locally 'line-numbering)
+  (options-group-disable-locally 'line-numbers)
   (options-group-disable-locally 'scrolling-behaviour)
 
   ;; Automaticly Kill Buffer When Exiting The Shell
