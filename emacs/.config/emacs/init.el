@@ -8,27 +8,28 @@
 
 (require 'options)
 
-;; Display Relative Line Numbers
-(create-options-group 'line-numbers
+(create-options-group line-numbers
+ :desc   "Display Relative Line Numbers."
+ :set    ((display-line-numbers-type        . relative)
+		  (display-line-numbers-width-start . t)
+		  (display-line-numbers-major-tick  . 10))
+ :on     (global-display-line-numbers-mode)
+ :hook   (:off (dired-mode-hook
+				term-mode-hook))
+ :ensure t)
 
-   :set               '((display-line-numbers-type . relative))
+(create-options-group tabs
+ :desc    "Set Tab Width To 4 Spaces."
+ :set     ((:setdef tab-width . 4))
+ :ensure  t)
 
-   :enable            '(global-display-line-numbers-mode)
-
-   :enable-by-default t)
-
-;; Set Tab Width To 4 Spaces
-(setq-default tab-width 4)
-
-;; Disable Line Wrapping
-(create-options-group 'line-wrapping
-
-   :set               '((truncate-lines . 1)
-						(truncate-partial-width-windows . nil))
-
-   :enable            '(visual-line-mode) ;; If It Is Enabled Behave Liek Wrapped Lines Are Seperate Lines
-
-   :enable-by-default t)
+(create-options-group line-wrapping
+ :desc    "Disable Line Wrapping Globally.
+		   If It Is Enabled Behave Like Wrapped Lines Are Seperate Lines."
+ :set     ((:setdef truncate-lines . 1)
+		   (truncate-partial-width-windows . nil))
+ :on      (visual-line-mode)
+ :ensure  t)
 
 ;; Hightlight Cursor Line
 (global-hl-line-mode 1)
@@ -40,17 +41,15 @@
 (electric-pair-mode 1)
 
 ;; Disable Unnecessary UI-Elements And Inhibit Startup Screen
-(create-options-group 'ui-elements
-
-   :set               '((inhibit-startup-screen . t)
-						(initial-scratch-message . ""))
-
-   :disable           '(menu-bar-mode
-						tool-bar-mode
-						scroll-bar-mode
-						tooltip-mode)
-
-   :enable-by-default t)
+(create-options-group ui-elements
+ :desc   ""
+ :set    ((inhibit-startup-screen . t)
+		  (initial-scratch-message . ""))
+ :off    (menu-bar-mode
+		  tool-bar-mode
+		  scroll-bar-mode
+		  tooltip-mode)
+ :ensure t)
 
 ;; Make Background Transparent
 (add-to-list 'default-frame-alist '(alpha-background . 90))
@@ -59,40 +58,34 @@
 (set-frame-font "JetBrains Mono 10" nil t)
 
 ;; Change Default Scrolling Behaviour
-(create-options-group 'scrolling-behaviour
-
-   :set               '((scroll-conservatively . 10000)
-						(scroll-preserve-screen-position . always)
-						(mouse-wheel-progressive-speed . nil)
-						(scroll-step . 1)
-						(scroll-margin . 4))
-
-   :enable-by-default t)
+(create-options-group scrolling-behaviour
+ :desc  "Change Default Scrolling Behaviour"
+ :set   ((scroll-conservatively . 10000)
+		 (scroll-preserve-screen-position . always)
+		 (mouse-wheel-progressive-speed . nil)
+		 (scroll-step . 1)
+		 (scroll-margin . 4))
+ :hook   (:off (term-mode-hook))
+ :ensure t)
 
 ;; Disable Autosaves And Backups
-(create-options-group 'no-backups
-
-   :set               '((auto-save-mode . 0)
-						(make-backup-files . nil))
-
-   :enable-by-default t)
+(create-options-group no-backups
+   :set               ((auto-save-mode . 0)
+					   (make-backup-files . nil))
+   :ensure t)
 
 ;; Balanced Windows
 ;; Reference: <https://zck.org/balance-emacs-windows>
-(create-options-group 'balanced-windows
-
-   :set               '((window-combination-resize . t))
-
-   :enable-by-default t)
+(create-options-group balanced-windows
+   :set               ((window-combination-resize . t))
+   :ensure t)
 
 (setq disabled-command-function nil)
 
 ;; Automaticly Follow Symbolic Links
-(create-options-group 'symbolic-links
-
-   :set               '((vc-follow-symlinks . t))
-
-   :enable-by-default t)
+(create-options-group symbolic-links
+   :set               ((vc-follow-symlinks . t))
+   :ensure t)
 
 ;; Delete Trailling Whitespace On Save
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -129,8 +122,8 @@
   :config
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic t)
-  (load-theme 'doom-flatwhite t)
-  (set-background-color "beige"))
+  (load-theme 'ef-spring t)
+  (set-background-color "azure"))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -449,9 +442,6 @@
 
   (define-key term-mode-map (kbd "M-x") 'execute-extended-command)
 
-  (options-group-disable-locally 'line-numbers)
-  (options-group-disable-locally 'scrolling-behaviour)
-
   ;; Automaticly Kill Buffer When Exiting The Shell
   ;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
   (defadvice term-handle-exit
@@ -593,8 +583,8 @@
 
 (use-package consult
   :ensure t
-  :bind (("C-u"		. consult-buffer)
-		 ("C-x b"	. consult-buffer)
+  :bind (("C-u"     . consult-buffer)
+		 ("C-x b"   . consult-buffer)
 		 ("C-c m b" . consult-buffer)
 		 ("C-c m t" . consult-theme)
 		 ("C-c m f" . consult-line)
