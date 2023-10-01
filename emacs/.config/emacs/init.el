@@ -4,18 +4,31 @@
 
 ;; => General Settings
 
+(add-to-list 'load-path "~/.config/emacs/lisp/")
+
+(require 'options)
+
 ;; Display Relative Line Numbers
-(setq display-line-numbers-type 'relative)
-(global-display-line-numbers-mode 1)
+(create-options-group 'line-numbers
+
+   :set               '((display-line-numbers-type . relative))
+
+   :enable            '(global-display-line-numbers-mode)
+
+   :enable-by-default t)
 
 ;; Set Tab Width To 4 Spaces
 (setq-default tab-width 4)
 
 ;; Disable Line Wrapping
-(setq-default truncate-lines 1)
-(setq truncate-partial-width-windows nil)
-;; If It Is Enabled Behave Like Wrapped Are Seperate Lines
-(visual-line-mode 1)
+(create-options-group 'line-wrapping
+
+   :set               '((truncate-lines . 1)
+						(truncate-partial-width-windows . nil))
+
+   :enable            '(visual-line-mode) ;; If It Is Enabled Behave Liek Wrapped Lines Are Seperate Lines
+
+   :enable-by-default t)
 
 ;; Hightlight Cursor Line
 (global-hl-line-mode 1)
@@ -26,15 +39,18 @@
 ;; Enable Autopairs
 (electric-pair-mode 1)
 
-;; Disable Unnecessary UI-Elements
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-(tooltip-mode 0)
+;; Disable Unnecessary UI-Elements And Inhibit Startup Screen
+(create-options-group 'ui-elements
 
-;; Inhibit Startup Screen
-(setq inhibit-startup-screen t)
-(setq initial-scratch-message "")
+   :set               '((inhibit-startup-screen . t)
+						(initial-scratch-message . ""))
+
+   :disable           '(menu-bar-mode
+						tool-bar-mode
+						scroll-bar-mode
+						tooltip-mode)
+
+   :enable-by-default t)
 
 ;; Make Background Transparent
 (add-to-list 'default-frame-alist '(alpha-background . 90))
@@ -42,30 +58,41 @@
 ;; Set Font-Face
 (set-frame-font "JetBrains Mono 10" nil t)
 
-;; Reproduce Vim Scrolling Behaviour
-(setq scroll-conservatively 10000)
+;; Change Default Scrolling Behaviour
+(create-options-group 'scrolling-behaviour
 
-;; Preserve Screen Position When Scrolling With The Mouse
-(setq scroll-preserve-screen-position 'always)
+   :set               '((scroll-conservatively . 10000)
+						(scroll-preserve-screen-position . always)
+						(mouse-wheel-progressive-speed . nil)
+						(scroll-step . 1)
+						(scroll-margin . 4))
 
-;; Make Scrolling Smoother By Only Scrolling One Line At A Time
-(setq scroll-step 1)
-
-;; Set A Scroll Offset Of 4 Lines
-(setq scroll-margin 4)
+   :enable-by-default t)
 
 ;; Disable Autosaves And Backups
-(setq auto-save-mode 0)
-(setq make-backup-files nil)
+(create-options-group 'no-backups
+
+   :set               '((auto-save-mode . 0)
+						(make-backup-files . nil))
+
+   :enable-by-default t)
 
 ;; Balanced Windows
-;; <https://zck.org/balance-emacs-windows>
-(setf window-combination-resize t)
+;; Reference: <https://zck.org/balance-emacs-windows>
+(create-options-group 'balanced-windows
+
+   :set               '((window-combination-resize . t))
+
+   :enable-by-default t)
 
 (setq disabled-command-function nil)
 
 ;; Automaticly Follow Symbolic Links
-(setq vc-follow-symlinks t)
+(create-options-group 'symbolic-links
+
+   :set               '((vc-follow-symlinks . t))
+
+   :enable-by-default t)
 
 ;; Delete Trailling Whitespace On Save
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -102,9 +129,14 @@
   :config
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic t)
-  (load-theme 'doom-zenburn t))
+  (load-theme 'doom-flatwhite t)
+  (set-background-color "beige"))
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(font-lock-comment-face ((t (:foreground "#859289" :inherit italic))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.6))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.4))))
@@ -405,7 +437,8 @@
 
 (defun cef-open-terminal ()
 
-  "Interactive Funtion Which Allows You To Open A Terminal Buffer.
+  "Interactive Funtion Which Allows You To Open A Terminal Buffer
+   Using The Default User Shell.
 
    Last Updated: 26.08.2023."
 
@@ -414,9 +447,10 @@
   ;; Open A Terminal Buffer Using The Default User Shell
   (term (getenv "SHELL"))
 
-  (display-line-numbers-mode 0)
-  (setq-local scroll-conservatively 0
-			  scroll-margin 0)
+  (define-key term-mode-map (kbd "M-x") 'execute-extended-command)
+
+  (options-group-disable-locally 'line-numbering)
+  (options-group-disable-locally 'scrolling-behaviour)
 
   ;; Automaticly Kill Buffer When Exiting The Shell
   ;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
