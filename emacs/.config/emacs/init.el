@@ -73,24 +73,26 @@
 ;; Wrap Around In Minibuffer When Selecting Completion Options
 (setq completion-auto-wrap t)
 
-;; => Package Managment
+;; :==:> Package Managment
 
-;; MELPA
-;; <https://melpa.org/>
+;; => MELPA Repositories
+;; Milkypostman’s Emacs Lisp Package Archive <https://melpa.org/>
+
 (require 'package)
-;; (add-to-list 'package-archives
-;;			 '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
 			 '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-;; use-package
-;; <https://github.com/jwiegley/use-package>
+;; => Use-Package
+;; Macro For Simplyfiying And Isolating Package Configurations <https://github.com/jwiegley/use-package>
+
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; => Colorscheme
+;; :==:> Theming / Appereance
+
+;; => Colorscheming
 
 (use-package doom-themes
   :ensure t
@@ -98,11 +100,6 @@
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic t)
   (load-theme 'doom-zenburn t))
-
-(use-package doom-modeline
-  :ensure t
-  :init
-  (doom-modeline-mode 1))
 
 (custom-set-faces
  '(font-lock-comment-face ((t (:foreground "#859289" :inherit italic))))
@@ -112,140 +109,169 @@
  '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 
-;; => Window And Buffer Managment
+;; => Modeline
 
-;; Switching User Buffers
-;; Code Partially Stolen From <http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html>
+(use-package doom-modeline
+  :ensure t
+  :init
+  (doom-modeline-mode 1))
+
+;; :==:> Window And Buffer Managment
+
+;; => Switching User Buffers
+;; Idea And Code Partially Stolen From <http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html>
+
+(defmacro cef-cycle-through-user-buffers (next-or-prev)
+
+  "Macro For Cycling Through Your Emacs User Buffers.
+  `next-or-prev' Either Takes The Symbol previous-buffer Or next-buffer Which Determines
+  Whether It Should Switch To The Next Or Previous User Buffer.
+
+  Last Updated: 25.08.2023."
+
+  `(let (start-in-buffer
+		 end-in-buffer)
+
+	 (setq start-in-buffer (buffer-name))
+
+	 (,next-or-prev)
+
+	 (let ((i 0))
+	   (while (< i 20)
+		 (if (string-equal "*" (substring (buffer-name) 0 1))
+			 (progn (,next-or-prev)
+					(setq i (+ i 1)))
+		   (setq i 100
+				 end-in-buffer (buffer-name)))))
+
+	 (when (eq start-in-buffer end-in-buffer)
+	   (error "There Is Only One User Buffer Available!"))
+))
+
 (defun cef-next-user-buffer ()
-  "Switch To The Next User Buffer."
+
+  "Interactive Function Which Switches To The Next User Buffer
+   If Available Otherwise It Will Throw An Error.
+
+   Last Updated: 25.08.2023."
+
   (interactive)
-  (setq start (buffer-name))
-  (next-buffer)
-  (let ((i 0))
-	(while (< i 20)
-	  (if (string-equal "*" (substring (buffer-name) 0 1))
-		  (progn (next-buffer)
-				 (setq i (+ i 1)))
-		(setq i 100
-			  dest (buffer-name)))))
-  (when (eq start dest)
-	(error "There Is Only One User-Buffer Available!")))
-(global-set-key (kbd "C-c w n") 'cef-next-user-buffer)
+
+  (cef-cycle-through-user-buffers next-buffer)
+)
 
 (defun cef-prev-user-buffer ()
-  "Switch To The Previous User Buffer."
-  (interactive)
-  (setq start (buffer-name))
-  (previous-buffer)
-  (let ((i 0))
-	(while (< i 20)
-	  (if (string-equal "*" (substring (buffer-name) 0 1))
-		  (progn (previous-buffer)
-				 (setq i (+ i 1)))
-		(setq i 100
-			  dest (buffer-name)))))
-  (when (eq start dest)
-	(error "There Is Only One User-Buffer Available!")))
-(global-set-key (kbd "C-c w p") 'cef-prev-user-buffer)
 
-;; Buffer Movement
-;; Stolen From This Repository: <https://github.com/lukhas/buffer-move>
+  "Interactive Function Which Switches To The Previous User Buffer
+   If Available Otherwise It Will Throw An Error.
+
+   Last Updated: 25.08.2023."
+
+  (interactive)
+
+  (cef-cycle-through-user-buffers previous-buffer)
+)
+
+;; => Buffer Movement
+;; Idea And Code Partially Stolen From <https://github.com/lukhas/buffer-move>
+
 (require 'windmove)
 
-(defun cef-buffer-move-up ()
-  "Swap the current buffer and the buffer above the split.
-If there is no split, ie now window above the current one, an
-error is signaled."
+(defmacro cef-move-buffer (direction)
+
+  "Macro For Swapping The Current Buffer With The Next Buffer
+   In The Specified Direction.
+
+   Last Updated: 25.08.2023."
+
+  `(let (other-window-p
+		 buffer-this-buffer)
+
+	 (setq other-window-p     (windmove-find-other-window ',direction)
+		   buffer-this-buffer (window-buffer (selected-window)))
+
+	 (when (or (null other-window-p)
+			   (and (eq ',direction 'down)
+					(string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win)))))
+	   (error "Unable To Swap Buffers."))
+
+	 (set-window-buffer (selected-window) (window-buffer other-window-p))
+
+	 (set-window-buffer other-window-p buffer-this-buffer)
+	 (select-window other-window-p)
+))
+
+(defun cef-move-buffer-up ()
+
+  "Interactive Function Which Swaps The Current Buffer With
+   The Buffer Above The Split.
+   If There Is No Split This Function Will Throw An Error.
+
+   Last Updated: 25.08.2023."
+
   (interactive)
-  (let* ((other-win (windmove-find-other-window 'up))
-	 (buf-this-buf (window-buffer (selected-window))))
-	(if (null other-win)
-		(error "No window above this one")
-	  ;; swap top with this one
-	  (set-window-buffer (selected-window) (window-buffer other-win))
-	  ;; move this one to top
-	  (set-window-buffer other-win buf-this-buf)
-	  (select-window other-win))))
 
-(defun cef-buffer-move-down ()
-"Swap the current buffer and the buffer under the split.
-If there is no split, ie now window under the current one, an
-error is signaled."
+  (cef-move-buffer up)
+)
+
+(defun cef-move-buffer-down ()
+
+  "Interactive Function Which Swaps The Current Buffer With
+   The Buffer Below The Split.
+   If There Is No Split This Function Will Thow An Error.
+
+   Last Updated: 25.08.2023."
+
   (interactive)
-  (let* ((other-win (windmove-find-other-window 'down))
-	 (buf-this-buf (window-buffer (selected-window))))
-	(if (or (null other-win)
-			(string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win))))
-		(error "No window under this one")
-	  ;; swap top with this one
-	  (set-window-buffer (selected-window) (window-buffer other-win))
-	  ;; move this one to top
-	  (set-window-buffer other-win buf-this-buf)
-	  (select-window other-win))))
 
-(defun cef-buffer-move-left ()
-"Swap the current buffer and the buffer on the left of the split.
-If there is no split, ie now window on the left of the current
-one, an error is signaled."
+  (cef-move-buffer down)
+)
+
+(defun cef-move-buffer-left ()
+
+  "Interactive Function Which Swaps The Current Buffer With
+   The Buffer On The Left Of The Split.
+   If There Is No Split This Function Will Throw An Error.
+
+   Last Updated: 25.08.2023."
+
   (interactive)
-  (let* ((other-win (windmove-find-other-window 'left))
-	 (buf-this-buf (window-buffer (selected-window))))
-	(if (null other-win)
-		(error "No left split")
-	  ;; swap top with this one
-	  (set-window-buffer (selected-window) (window-buffer other-win))
-	  ;; move this one to top
-	  (set-window-buffer other-win buf-this-buf)
-	  (select-window other-win))))
 
-(defun cef-buffer-move-right ()
-"Swap the current buffer and the buffer on the right of the split.
-If there is no split, ie now window on the right of the current
-one, an error is signaled."
+  (cef-move-buffer left)
+)
+
+(defun cef-move-buffer-right ()
+
+  "Interactive Function Which Swaps The Current Buffer With
+   The Buffer On The Right Of The Split.
+   If There Is No Split This Function Will Throw An Error.
+
+   Last Updated: 25.08.2023."
+
   (interactive)
-  (let* ((other-win (windmove-find-other-window 'right))
-	 (buf-this-buf (window-buffer (selected-window))))
-	(if (null other-win)
-		(error "No right split")
-	  ;; swap top with this one
-	  (set-window-buffer (selected-window) (window-buffer other-win))
-	  ;; move this one to top
-	  (set-window-buffer other-win buf-this-buf)
-	  (select-window other-win))))
 
-(global-set-key (kbd "C-c w f") 'cef-buffer-move-right)
-(global-set-key (kbd "C-c w b") 'cef-buffer-move-left)
-(global-set-key (kbd "C-c w n") 'cef-buffer-move-down)
-(global-set-key (kbd "C-c w p") 'cef-buffer-move-up)
+  (cef-move-buffer right)
+)
 
-(global-set-key (kbd "C-c C-c w f") 'windmove-right)
-(global-set-key (kbd "C-c C-c w b") 'windmove-left)
-(global-set-key (kbd "C-c C-c w n") 'windmove-down)
-(global-set-key (kbd "C-c C-c w p") 'windmove-up)
+;; => Killing Buffers
 
-;; Kill Current Buffer
 (defun cef-kill-current-buffer ()
-  "Kill The Current Buffer."
+
+  "Interactive Function Which Kills The Current Buffer.
+
+   Last Updated: 25.08.2023."
+
   (interactive)
-  (kill-buffer (buffer-name)))
+
+  (kill-buffer (buffer-name))
+)
+
 (global-set-key (kbd "C-x k") 'cef-kill-current-buffer)
 
-;; General
-(use-package window
-  :bind (("C-c w s" . split-window-vertically)
-		 ("C-c w v" . split-window-horizontally)
-		 ("C-c w k" . delete-window)
-		 ("C-c w z" . delete-other-windows)
-		 ("C-c o"   . other-window)
-		 ("C-c C-o" . other-window)))
+;; :==:> Custom Functions
 
-;; Open URL in Browser
-(defvar cef-browser-command "firefox"
-  "Contains The Name Of The Default Browser To Open Links With.
-   (Defaults To: 'firefox')")
-
-(defvar cef-url-regex "\\b\\(https?://\\|www\\.\\)[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]"
-  "RegEx To Match URLs.")
+(setq cef-browser-command "firefox"
+	  cef-url-regex       "\\b\\(https?://\\|www\\.\\)[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]")
 
 ;; From <https://emacs.stackexchange.com/questions/7148/get-all-regexp-matches-in-buffer-as-a-list>
 (defun cef-multiple-matches (regexp string)
@@ -268,6 +294,8 @@ one, an error is signaled."
   "Extract All URLs From A Given String."
   (cef-multiple-matches cef-url-regex string))
 
+;; => Open URL In Browser
+
 (defun cef-open-url-with (browser-cmd)
   ""
   (interactive)
@@ -284,6 +312,8 @@ one, an error is signaled."
 										(interactive)
 										(cef-open-url-with (concat cef-browser-command " -new-window"))))
 
+;; => Copy URL
+
 (defun cef-copy-url ()
   ""
   (interactive)
@@ -291,7 +321,8 @@ one, an error is signaled."
 	(kill-new url)))
 (global-set-key (kbd "C-c C-c c u") 'cef-copy-url)
 
-;; Text Selection
+;; => Selecting Text
+
 (defun toggle-selection ()
   ""
   (interactive)
@@ -311,7 +342,8 @@ one, an error is signaled."
 (global-set-key (kbd "C-c p") 'mark-paragraph)
 (global-set-key (kbd "C-c r") 'toggle-rectangle-selection)
 
-;; Open A Terminal
+;; => Open A Terminal In The Current Pane
+
 (defun cef-open-terminal ()
   "Open A Terminal Buffer With The Default User Shell And Disable Line Numbers."
   (interactive)
@@ -326,33 +358,45 @@ one, an error is signaled."
 	(kill-buffer)))
 (global-set-key (kbd "C-c C-c o t") 'cef-open-terminal)
 
-;; Moving Lines
+;; => Inserting Current Date
+
+(defun cef-insert-todays-date ()
+  ""
+  (interactive)
+  (insert (format-time-string "%d.%m.%Y")))
+
+
+;; => Moving Lines
 ;; Copied From <https://www.emacswiki.org/emacs/MoveLine>
-(defmacro save-column (&rest body)
+
+(defmacro cef-save-column (&rest body)
   ""
   `(let ((column (current-column)))
 	 (unwind-protect
 		 (progn ,@body)
 	   (move-to-column column))))
-(put 'save-column 'lisp-indent-function 0)
+(put 'cef-save-column 'lisp-indent-function 0)
 
-(defun move-line-up ()
+(defun cef-move-line-up ()
   ""
   (interactive)
-  (save-column
+  (cef-save-column
 	(transpose-lines 1)
 	(forward-line -2)))
-(global-set-key (kbd "M-p") 'move-line-up)
+(global-set-key (kbd "M-p") 'cef-move-line-up)
 
-(defun move-line-down ()
+(defun cef-move-line-down ()
   ""
   (interactive)
-  (save-column
+  (cef-save-column
 	(forward-line 1)
 	(transpose-lines 1)
 	(forward-line -1)))
-(global-set-key (kbd "M-n") 'move-line-down)
+(global-set-key (kbd "M-n") 'cef-move-line-down)
 
+;; => Testing Certain Functions
+
+;; Open Dired In A Side Split
 (defun cef-dired-side-window ()
   "Open Dired In "
   (interactive)
@@ -363,13 +407,58 @@ one, an error is signaled."
   (other-window))
 (global-set-key (kbd "C-c w d") 'cef-dired-side-window)
 
-;; Other Keybindings
-(global-set-key (kbd "C-.") 'repeat)
+;; :==:> Keybindings
 
-(global-set-key (kbd "C-,") 'comment-line)
+;; => General.el
+;; More Convenient Key Definitions In Emacs <https://github.com/noctuid/general.el>
 
-(global-set-key (kbd "C--") 'undo-redo)
-(global-set-key (kbd "C-_") 'undo)
+(use-package general
+  :ensure t
+
+  :init
+  (require 'general)
+
+  ;; Window And Buffer Managment Related Keybindings
+  (general-define-key
+   :prefix "C-c"
+
+   ;; Switching User Buffers
+   "w p" 'cef-prev-user-buffer         ;; Switch To Previous User Buffer
+   "w n" 'cef-next-user-buffer         ;; Switch To Next User Buffer
+
+   ;; Splitting Windows
+   "w s" 'split-window-vertically      ;; Split The Current Window Horizontally
+   "w v" 'split-window-horizontally    ;; Split The Current Window Vertically
+
+   ;; Close Windows
+   "w k" 'delete-window                ;; Close The Current Window
+   "w z" 'delete-other-windows         ;; Close Every Window Except The Current Window
+
+   ;; Moving Between Splits
+   "o"   'other-window                 ;; Switch To The Next Split
+   "C-o" 'other-window                 ;; Alias For "C-c o"
+   "w f" 'windmove-right               ;; Move Right To The Next Split
+   "w b" 'windmove-left                ;; Move Left To The Next Split
+   "w n" 'windmove-down                ;; Move Down To The Next Split
+   "w p" 'windmove-up                  ;; Move Up To The Next Split
+
+   ;; Moving Buffers Around
+   "w m f" 'cef-move-buffer-right      ;; Move The Current Buffer To The Right
+   "w m b" 'cef-move-buffer-left       ;; Move The Current Buffer To The Left
+   "w m n" 'cef-move-buffer-down       ;; Move The Current Buffer Down
+   "w m p" 'cef-move-buffer-up         ;; Move The Current Buffer Up
+   )
+
+  ;; Miscellaneous Keybindings
+  (general-define-key
+
+   "C-." 'repeat                       ;; Repeat Last Command
+
+   "C-," 'comment-line                 ;; Toggle Comment On Current Line / Region
+
+   "C--" 'undo-redo                    ;; Redo Last Change
+   "C-_" 'undo)                        ;; Undo Last Change
+)
 
 ;; => Fuzzy Finding
 
