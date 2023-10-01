@@ -79,8 +79,10 @@
 ;; Milkypostman’s Emacs Lisp Package Archive <https://melpa.org/>
 
 (require 'package)
+
 (add-to-list 'package-archives
 			 '("melpa" . "https://melpa.org/packages/") t)
+
 (package-initialize)
 
 ;; => Use-Package
@@ -96,6 +98,7 @@
 
 (use-package doom-themes
   :ensure t
+
   :config
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic t)
@@ -113,6 +116,7 @@
 
 (use-package doom-modeline
   :ensure t
+
   :init
   (doom-modeline-mode 1))
 
@@ -145,8 +149,7 @@
 				 end-in-buffer (buffer-name)))))
 
 	 (when (eq start-in-buffer end-in-buffer)
-	   (error "There Is Only One User Buffer Available!"))
-))
+	   (error "There Is Only One User Buffer Available!"))))
 
 (defun cef-next-user-buffer ()
 
@@ -157,8 +160,7 @@
 
   (interactive)
 
-  (cef-cycle-through-user-buffers next-buffer)
-)
+  (cef-cycle-through-user-buffers next-buffer))
 
 (defun cef-prev-user-buffer ()
 
@@ -169,8 +171,7 @@
 
   (interactive)
 
-  (cef-cycle-through-user-buffers previous-buffer)
-)
+  (cef-cycle-through-user-buffers previous-buffer))
 
 ;; => Buffer Movement
 ;; Idea And Code Partially Stolen From <https://github.com/lukhas/buffer-move>
@@ -198,8 +199,7 @@
 	 (set-window-buffer (selected-window) (window-buffer other-window-p))
 
 	 (set-window-buffer other-window-p buffer-this-buffer)
-	 (select-window other-window-p)
-))
+	 (select-window other-window-p)))
 
 (defun cef-move-buffer-up ()
 
@@ -211,8 +211,7 @@
 
   (interactive)
 
-  (cef-move-buffer up)
-)
+  (cef-move-buffer up))
 
 (defun cef-move-buffer-down ()
 
@@ -224,8 +223,7 @@
 
   (interactive)
 
-  (cef-move-buffer down)
-)
+  (cef-move-buffer down))
 
 (defun cef-move-buffer-left ()
 
@@ -237,8 +235,7 @@
 
   (interactive)
 
-  (cef-move-buffer left)
-)
+  (cef-move-buffer left))
 
 (defun cef-move-buffer-right ()
 
@@ -250,8 +247,7 @@
 
   (interactive)
 
-  (cef-move-buffer right)
-)
+  (cef-move-buffer right))
 
 ;; => Killing Buffers
 
@@ -263,62 +259,125 @@
 
   (interactive)
 
-  (kill-buffer (buffer-name))
-)
+  (kill-buffer (buffer-name)))
 
 (global-set-key (kbd "C-x k") 'cef-kill-current-buffer)
 
 ;; :==:> Custom Functions
 
-(setq cef-browser-command "firefox"
-	  cef-url-regex       "\\b\\(https?://\\|www\\.\\)[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]")
-
 ;; From <https://emacs.stackexchange.com/questions/7148/get-all-regexp-matches-in-buffer-as-a-list>
 (defun cef-multiple-matches (regexp string)
-  "Return A List Containing All Of The Elements That Match A Given RegEx In A Certain String."
+
+  "Function Which Allows You To Match A Regular Expression Against Multiple
+   Occurrences In A Certain String And Returns Them As A List.
+
+   Last Updated: 26.08.2023."
+
   (save-match-data
+
 	(let ((pos 0)
 		  matches)
+
 	  (while (string-match regexp string pos)
 		(push (match-string 0 string) matches)
 		(setq pos (match-end 0)))
+
 	  matches)))
 
 (defun cef-grap-region-or-line ()
-  "Function That Returns Either The Current Region Or Unless There Is A Active Mark The Current Line As A String."
+
+  "Function Which Checks If There Is A Selected Region Active.
+   If That Is The Case It Will Return The Text From That Region.
+   Otherwise It Will Return The Text From The Current Line.
+
+   Last Updated: 26.08.2023."
+
   (if mark-active
-	  (buffer-substring-no-properties (region-beginning) (region-end))
-	(buffer-substring-no-properties (point-at-bol) (point-at-eol))))
+
+	  (buffer-substring-no-properties
+	   (region-beginning)
+	   (region-end))
+
+	(buffer-substring-no-properties
+	 (point-at-bol)
+	 (point-at-eol))))
 
 (defun cef-extract-urls-from-string (string)
-  "Extract All URLs From A Given String."
-  (cef-multiple-matches cef-url-regex string))
+
+  "Function Which Extracts All Of The URLs That Are Part
+   Of A Given String.
+
+   Last Updated: 26.08.2023."
+
+  (let (url-regexp)
+
+	(setq url-regexp
+		  "\\b\\(https?://\\|www\\.\\)[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]")
+
+  (cef-multiple-matches url-regexp string)))
 
 ;; => Open URL In Browser
 
-(defun cef-open-url-with (browser-cmd)
-  ""
+(defvar cef-browser "firefox"
+
+  "Global Variable Which Holds The Preffered Browser As A String.")
+
+(defmacro cef-open-url-with (browser-cmd)
+
+  "Macro Which Allows You To Grab All Of The URLs That Are Part
+   Of The Current Region Or Line And Opens Them Using A Given
+   Browser-Command.
+
+   Last Updated: 26.08.2023."
+
+  `(dolist (url
+		   (cef-extract-urls-from-string (cef-grap-region-or-line)))
+
+	(shell-command
+	 (format "%s \"%s\"" ,browser-cmd url))))
+
+(defun cef-open-url-in-current-browser-session ()
+
+  "Interactive Function Which Opens One Or Multiple URLs In
+   The Current Browser Sesssion.
+   If There Is No Session Availeble It Will Open A New One.
+
+   Last Updated: 26.08.2023."
+
   (interactive)
-	(dolist (url (cef-extract-urls-from-string (cef-grap-region-or-line)))
-	  (shell-command (format "%s \"%s\"" browser-cmd url))))
 
-(global-set-key (kbd "C-c C-c o i b") (lambda ()
-										""
-										(interactive)
-										(cef-open-url-with cef-browser-command)))
+  (cef-open-url-with cef-browser))
 
-(global-set-key (kbd "C-c C-c o i w") (lambda ()
-										""
-										(interactive)
-										(cef-open-url-with (concat cef-browser-command " -new-window"))))
+(defun cef-open-url-in-new-browser-session ()
+
+  "Interactive Function Which Opens One Or Multiple URLs In
+   A New Browser Sesssion.
+
+   Last Updated: 26.08.2023."
+
+  (interactive)
+
+  (cef-open-url-with
+   (concat cef-browser " -new-window")))
+
+(global-set-key (kbd "C-c C-c o i b") 'cef-open-url-in-current-browser-session)
+(global-set-key (kbd "C-c C-c o i w") 'cef-open-url-in-new-browser-session)
 
 ;; => Copy URL
 
 (defun cef-copy-url ()
-  ""
+
+  "Interactive Function Which Will Copy All Of The URLs In
+   The Current Line Or Region To Your Kill Ring.
+
+   Last Updated: 26.08.2023."
+
   (interactive)
-  (dolist (url (cef-extract-urls-from-string (cef-grap-region-or-line)))
+
+  (dolist (url
+		   (cef-extract-urls-from-string (cef-grap-region-or-line)))
 	(kill-new url)))
+
 (global-set-key (kbd "C-c C-c c u") 'cef-copy-url)
 
 ;; => Selecting Text
@@ -345,26 +404,42 @@
 ;; => Open A Terminal In The Current Pane
 
 (defun cef-open-terminal ()
-  "Open A Terminal Buffer With The Default User Shell And Disable Line Numbers."
+
+  "Interactive Funtion Which Allows You To Open A Terminal Buffer.
+
+   Last Updated: 26.08.2023."
+
   (interactive)
+
+  ;; Open A Terminal Buffer Using The Default User Shell
   (term (getenv "SHELL"))
+
   (display-line-numbers-mode 0)
   (setq-local scroll-conservatively 0
 			  scroll-margin 0)
-  ;; Automaticly Kill Buffer When Exiting Shell
+
+  ;; Automaticly Kill Buffer When Exiting The Shell
   ;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
   (defadvice term-handle-exit
 	  (after term-kill-buffer-on-exit activate)
 	(kill-buffer)))
+
 (global-set-key (kbd "C-c C-c o t") 'cef-open-terminal)
 
 ;; => Inserting Current Date
 
 (defun cef-insert-todays-date ()
-  ""
-  (interactive)
-  (insert (format-time-string "%d.%m.%Y")))
 
+  "Interactive Function Which Inserts The Current Date.
+
+   Last Updated: 26.08.2023."
+
+  (interactive)
+
+  (insert
+   (format-time-string "%d.%m.%Y")))
+
+(global-set-key (kbd "C-c C-c i d") 'cef-insert-todays-date)
 
 ;; => Moving Lines
 ;; Copied From <https://www.emacswiki.org/emacs/MoveLine>
@@ -423,8 +498,8 @@
    :prefix "C-c"
 
    ;; Switching User Buffers
-   "w p" 'cef-prev-user-buffer         ;; Switch To Previous User Buffer
-   "w n" 'cef-next-user-buffer         ;; Switch To Next User Buffer
+   "w c p" 'cef-prev-user-buffer       ;; Switch To Previous User Buffer
+   "w c n" 'cef-next-user-buffer       ;; Switch To Next User Buffer
 
    ;; Splitting Windows
    "w s" 'split-window-vertically      ;; Split The Current Window Horizontally
@@ -495,20 +570,28 @@
 
 (use-package go-mode
   :ensure t)
+
 (use-package lua-mode
   :ensure t)
+
 (use-package yaml-mode
   :ensure t)
+
 (use-package markdown-mode
   :ensure t)
+
 (use-package rust-mode
   :ensure t)
+
 (use-package csharp-mode
   :ensure t)
+
 (use-package dockerfile-mode
   :ensure t)
+
 (use-package haskell-mode
   :ensure t)
+
 (use-package python-mode
   :ensure t)
 
