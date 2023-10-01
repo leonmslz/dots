@@ -1,0 +1,54 @@
+# Colors (Everforest Dark)
+colors:
+  # Default colors
+  primary:
+    background: "#2d353b"
+    foreground: "#d3c6aa"
+
+  # Normal colors
+  normal:
+    black:   "#475258"
+    red:     "#e67e80"
+    green:   "#a7c080"
+    yellow:  "#dbbc7f"
+    blue:    "#7fbbb3"
+    magenta: "#d699b6"
+    cyan:    "#83c092"
+    white:   "#d3c6aa"
+
+  # Bright colors
+  bright:
+    black:   "#475258"
+    red:     "#e67e80"
+    green:   "#a7c080"
+    yellow:  "#dbbc7f"
+    blue:    "#7fbbb3"
+    magenta: "#d699b6"
+    cyan:    "#83c092"
+    white:   "#d3c6aa"
+
+draw_bold_text_with_bright_colors: true
+
+window:
+  padding:
+    x: 3
+    y: 3
+
+key_bindings:
+  - { key: P,        mods: Control|Shift,       action: Paste            }
+  - { key: Y,        mods: Control|Shift,       action: Copy             }
+  - { key: R,        mods: Control|Shift,       action: ResetFontSize    }
+  - { key: J,        mods: Control|Shift,       action: IncreaseFontSize }
+  - { key: K,        mods: Control|Shift,       action: DecreaseFontSize }
+
+font:
+  size: 10.5
+  normal:
+    family: JetBrains Mono
+    style: Regular
+  bold:
+    family: JetBrains Mono
+    style: Bold
+  italic:
+    family: JetBrains Mono
+    style: Italic

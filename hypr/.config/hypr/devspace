@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+current_mfact=$(hyprctl -j getoption master:mfact | jq ".float")
+
+hyprctl keyword master:mfact 0.75
+
+emacs &
+sleep 0.5
+alacritty &
+
+hyprctl keyword master:mfact ${current_mfact}

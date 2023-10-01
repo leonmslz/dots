@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+swww init &
+swww img $HOME/Downloads/wp*
+
+waybar &
