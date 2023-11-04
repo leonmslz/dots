@@ -2,107 +2,6 @@
 ;; Configuration File For GNU Emacs
 ;; By Leon Schulz
 
-(require 'server)
-(unless (server-running-p)
-  (server-start))
-
-;; => General Settings
-
-(add-to-list 'load-path "~/.config/emacs/lisp/")
-
-(require 'options) ;; <https://github.com/leonmslz/options.el>
-
-(create-options-group line-numbers
- :desc   "Display Relative Line Numbers."
- :set    ((display-line-numbers-type        . relative)
-		  (display-line-numbers-width-start . t)
-		  (display-line-numbers-major-tick  . 10))
- :on     (global-display-line-numbers-mode)
- :hook   (:off (dired-mode-hook
-				term-mode-hook))
- :ensure t)
-
-(create-options-group tabs
- :desc    "Set Tab Width To 4 Spaces."
- :set     ((:setdef tab-width . 4))
- :ensure  t)
-
-(create-options-group line-wrapping
- :desc    "Disable Line Wrapping Globally.
-		   If It Is Enabled Behave Like Wrapped Lines Are Seperate Lines."
- :set     ((:setdef truncate-lines . 1)
-		   (truncate-partial-width-windows . nil))
- :on      (visual-line-mode)
- :ensure  t)
-
-(create-options-group hl-line
- :desc   "Highlight Cursor Line."
- :on     (global-hl-line-mode)
- :hook   (:off (term-mode-hook))
- :ensure t)
-
-;; ;; Hightlight Cursor Line
-;; (global-hl-line-mode 1)
-
-;; Enable Deletion Of Selected Text
-(delete-selection-mode 1)
-
-;; Enable Autopairs
-(electric-pair-mode 1)
-
-;; Disable Unnecessary UI-Elements And Inhibit Startup Screen
-(create-options-group ui-elements
- :desc   ""
- :set    ((inhibit-startup-screen . t)
-		  (initial-scratch-message . ""))
- :off    (menu-bar-mode
-		  tool-bar-mode
-		  scroll-bar-mode
-		  tooltip-mode)
- :ensure t)
-
-;; Make Background Transparent
-(add-to-list 'default-frame-alist '(alpha-background . 90))
-
-;; Set Font-Face
-(set-frame-font "JetBrains Mono 10" nil t)
-
-;; Change Default Scrolling Behaviour
-(create-options-group scrolling-behaviour
- :desc  "Change Default Scrolling Behaviour"
- :set   ((scroll-conservatively . 10000)
-		 (scroll-preserve-screen-position . always)
-		 (mouse-wheel-progressive-speed . nil)
-		 (scroll-step . 1)
-		 (scroll-margin . 4))
- :hook   (:off (term-mode-hook))
- :ensure t)
-
-;; Disable Autosaves And Backups
-(create-options-group no-backups
-   :set               ((auto-save-mode . 0)
-					   (make-backup-files . nil))
-   :ensure t)
-
-;; Balanced Windows
-;; Reference: <https://zck.org/balance-emacs-windows>
-(create-options-group balanced-windows
-   :set               ((window-combination-resize . t))
-   :ensure t)
-
-(setq disabled-command-function nil)
-
-;; Automaticly Follow Symbolic Links
-(create-options-group symbolic-links
-   :set               ((vc-follow-symlinks . t))
-   :ensure t)
-
-;; Delete Trailling Whitespace On Save
-(add-hook 'before-save-hook 'whitespace-cleanup)
-
-;; Wrap Around In Minibuffer When Selecting Completion Options
-(setq completion-auto-wrap t)
-
 ;; :==:> Package Managment
 
 ;; => MELPA Repositories
@@ -122,20 +21,148 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; :==:> General Settings
+
+;; => Emacs Startup Time
+;; Display Emacs Startup Time On Startup :D <https://github.com/daviwil/dotfiles>
+
+;; The Default Is 800 Kilobytes. Measured In Bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+
+;; Profile Emacs Startup
+(add-hook 'emacs-startup-hook
+		  (lambda ()
+			(message "*** Emacs loaded in %s seconds with %d garbage collections."
+					 (emacs-init-time "%.2f")
+					 gcs-done)))
+
+;; => Emacs Server / Deamon
+
+(use-package server
+  :ensure t
+
+  :config
+  (unless (server-running-p)
+	(server-start)))
+
+;; => Options.el
+;; Plugin To Group Options Together And Maintain Consistency Across Emacs
+;; Regarding The Setting Of Options <https://github.com/leonmslz/options.el>
+
+(use-package options
+  :load-path "options.el/"
+  :ensure nil
+
+  :config
+  (progn
+
+	(op-c line-numbers
+		  :desc   "Enable Relative Line Numbers"
+		  :set    ((display-line-numbers-type        . relative)
+				   (display-line-numbers-width-start . t)
+				   (display-line-numbers-major-tick  . 10))
+		  :on     (global-display-line-numbers-mode)
+		  :hook   (:off (dired-mode-hook
+						 eshell-mode-hook
+						 term-mode-hook))
+		  :ensure t)
+
+	(op-c tabs
+		  :desc    "Set Tab Width To 4 Spaces."
+		  :set     ((:setdef tab-width . 4))
+		  :ensure  t)
+
+	(op-c line-wrapping
+		  :desc    "Disable Line Wrapping Globally. If It Is Enabled Behave Like Wrapped Lines Are Seperate Lines."
+		  :set     ((:setdef truncate-lines . 1)
+					(truncate-partial-width-windows . nil))
+		  :on      (visual-line-mode)
+		  :ensure  t)
+
+	(op-c hl-line
+		  :desc   "Highlight Cursor Line."
+		  :on     (global-hl-line-mode)
+		  :hook   (:off (term-mode-hook
+						 eshell-mode-hook))
+		  :ensure t)
+
+	(op-c ui-elements
+		  :desc   "Disable Unnecessary UI-Elements And Inhibit Startup Screen"
+		  :set    ((inhibit-startup-screen . t)
+				   (initial-scratch-message . ""))
+		  :off    (menu-bar-mode
+				   tool-bar-mode
+				   scroll-bar-mode
+				   tooltip-mode)
+		  :ensure t)
+
+	(op-c scrolling-behaviour
+		  :desc  "Change Default Scrolling Behaviour"
+		  :set   ((scroll-conservatively . 10000)
+				  (scroll-preserve-screen-position . always)
+				  (mouse-wheel-progressive-speed . nil)
+				  (scroll-step . 1)
+				  (scroll-margin . 4))
+		  :hook   (:off (term-mode-hook
+						 eshell-mode-hook))
+		  :ensure t)
+
+	(op-c no-backups
+		  :desc   "Disable Autosaves And Backups"
+		  :set    ((auto-save-mode . 0)
+				   (make-backup-files . nil))
+		  :ensure t)
+
+	(op-c balanced-windows
+		  :desc   "Balanced Windows <https://zck.org/balance-emacs-windows>"
+		  :set    ((window-combination-resize . t))
+		  :ensure t)
+
+	(op-c symbolic-links
+		  :desc   "Automaticly Follow Symbolic Links"
+		  :set    ((vc-follow-symlinks . t))
+		  :ensure t)
+
+	(setq disabled-command-function nil)
+
+	;; Enable Deletion Of Selected Text
+	(delete-selection-mode 1)
+
+	;; Enable Autopairs
+	(electric-pair-mode 1)
+
+	;; Delete Trailling Whitespace On Save
+	(add-hook 'before-save-hook 'whitespace-cleanup)
+
+	;; Wrap Around In Minibuffer When Selecting Completion Options
+	(setq completion-auto-wrap t)
+
+	;; Make Background Transparent
+	(add-to-list 'default-frame-alist '(alpha-background . 85))
+
+	;; Set Font-Face
+	(set-frame-font "JetBrains Mono 10" nil t)
+
+	))
+
 ;; :==:> Theming / Appereance
 
 ;; => Colorscheming
 
-(use-package doom-themes
-  :ensure t
+;; (use-package ef-themes
+;;   :ensure t
 
-  :config
-  (setq doom-themes-enable-bold t)
-  (setq doom-themes-enable-italic t)
-  (load-theme 'ef-spring t))
+;;   :config
+;;   (load-theme 'ef-spring t))
+
+(add-to-list 'custom-theme-load-path "/home/leon/.config/emacs/visionary-theme.el/")
+(load-theme 'visionary-green t)
 
 (custom-set-faces
- ;; '(font-lock-comment-face ((t (:foreground "#859289" :inherit italic))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.6))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.4))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
@@ -643,3 +670,10 @@
   :ensure t
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("5a3b5c6e95d124fcc23892b97b0a6743376494368fe9566ab8825f637777e693" "b14446ae9fbe8268f6e06f070b62b96b44bb9ad4d10d08848b8eb1a74e6085bc" "6ab94fa8d4bcf530b72674fc8e947db23c044f5e08f34a06ea8eed109c788397" "405e8bbef0f6d8ecd19022ee90fb1234fed049f4b6ed4913e12658ed2fd6dc89" "9f6ba7637b4c3ceb5c697d8dcba8c0e84b506ef11afb439c78b1a8812753116a" "e8ff4936109610b67af0b3d83f95e05224e89a3cb7ada1b4c9c617f3c59319fe" "917599da0c9d9637a95d76a17cf6ecd3e054a4c0236e6d32393a5476b3b6a871" "e116116d2d54141cada3cb72d49d0b5a9aae594a6af86efa2d374b9c793391f7" "73bffcbedeb01f4523d8c9da2715f307aa8627c4a8725037f20a17bc28e1b2d3" "34e207bc4960f5bd23d97c0a8759fec8a97a473b70f9c9c6a5aa2ec9d768d218" "99aef65cee60667ae9d4ff45fe02467aea07b2f31ea618954aa29b392de95103" "4a52fbeb6eb8413b19cd48155b4010670c18706f61765971ba528312db3e811c" default)))
