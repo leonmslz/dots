@@ -36,6 +36,14 @@
                      (emacs-init-time "%.2f")
                      gcs-done)))
 
+;; => Encodings
+
+;; UTF-8 As Default Encoding
+(set-language-environment    'utf-8)
+(set-default-coding-systems  'utf-8)
+(set-keyboard-coding-system  'utf-8-unix)
+(set-terminal-coding-system  'utf-8-unix)
+
 ;; => Basic Options
 
 ;; Relative Line Numbers
@@ -49,10 +57,7 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Disable Line Wrapping
-(setq-default truncate-lines 1)
-(setq         truncate-partical-width-windows nil)
-;; If Enabled Behave Like Wrapped Lines Are Seperate
-(global-visual-line-mode t)
+(setq-default truncate-lines t)
 
 ;; Hightlight Cursorline
 (global-hl-line-mode t)
@@ -75,7 +80,8 @@
 (setq scroll-margin 4)
 
 ;; Disable Autosaves And Backups
-(setq-default auto-save-mode 0)
+(setq-default auto-save-default nil)
+(setq-default create-lockfiles nil)
 (setq-default make-backup-files nil)
 
 ;; Balanced Windows <https://zck.org/balance-emacs-windows>
@@ -85,13 +91,13 @@
 (setq vc-follow-symlinks t)
 
 ;; Prettify Symbols
-(global-prettify-symbols-mode 1)
+(global-prettify-symbols-mode t)
 
 ;; Enable Deletion Of Selected Text
-(delete-selection-mode 1)
+(delete-selection-mode t)
 
 ;; Enable Autopairs
-(electric-pair-mode 1)
+(electric-pair-mode t)
 
 ;; Delete Trailling Whitespace On Save
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -102,13 +108,19 @@
 ;; Make Background Transparent
 (add-to-list 'default-frame-alist '(alpha-background . 85))
 
+;; When Recentering Only Recenter To The Middle Of The Screen
+(setq recenter-positions '(middle))
+
+;; Move Cursor By Subword
+(global-subword-mode t)
+
 ;; :==:> Theming / Appereance
 
 ;; => Colorscheming
-(use-package ef-themes
+(use-package doom-themes
   :ensure t
   :config
-  (load-theme 'ef-spring t))
+  (load-theme 'doom-solarized-light t))
 
 ;; => Font-Face
 (set-face-attribute 'default
@@ -124,6 +136,34 @@
  '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
+
+;; => Modeline
+
+(add-hook 'post-command-hook (lambda () (force-mode-line-update t)))
+
+(defface cef-modeline-face-red
+  '((default :inherit (bold)) (t :background "#ff9090" :foreground "black")) "")
+
+(defface cef-modeline-face-cyan
+  '((default :inherit ()) (t :background "#94d2bd" :foreground "black")) "")
+
+(defvar-local cef-modeline-current-buffer
+    '(:eval (format " %s " (propertize (buffer-name) 'face 'italic))))
+
+(defvar-local cef-modeline-last-command
+    '(:eval (propertize (format " %s " (symbol-name last-repeatable-command)) 'face 'cef-modeline-face-red)))
+
+(dolist (cef-modeline-variables '(cef-modeline-last-command
+                                  cef-modeline-current-buffer))
+  (put cef-modeline-variables 'risky-local-variable t))
+
+(setq-default mode-line-format '("%e"
+                                 (:eval (if (buffer-modified-p) " ✏️ " " 💾 "))
+                                 cef-modeline-current-buffer
+                                 " "
+                                 (:eval (propertize " %l:%c " 'face 'cef-modeline-face-cyan))
+                                 "   "
+                                 cef-modeline-last-command))
 
 ;; :==:> Window And Buffer Managment
 
@@ -183,87 +223,50 @@
 
 (require 'windmove)
 
-(defmacro cef-move-buffer (direction)
+(defun cef-move-window (direction)
+  "Helper Function To Move A Window In The Speciefied Direction."
 
-  "Macro For Swapping The Current Buffer With The Next Buffer
-   In The Specified Direction.
+  (let (other-window-p
+        buffer-this-buffer)
 
-   Last Updated: 25.08.2023."
+    (setq other-window-p     (windmove-find-other-window direction)
+          buffer-this-buffer (window-buffer (selected-window)))
 
-  `(let (other-window-p
-         buffer-this-buffer)
+    (when (or (null other-window-p)
+              (and (eq direction 'down)
+                   (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win)))))
+      (error "Unable To Swap Buffers."))
 
-     (setq other-window-p     (windmove-find-other-window ',direction)
-           buffer-this-buffer (window-buffer (selected-window)))
+    (set-window-buffer (selected-window) (window-buffer other-window-p))
 
-     (when (or (null other-window-p)
-               (and (eq ',direction 'down)
-                    (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win)))))
-       (error "Unable To Swap Buffers."))
+    (set-window-buffer other-window-p buffer-this-buffer)
+    (select-window other-window-p)))
 
-     (set-window-buffer (selected-window) (window-buffer other-window-p))
-
-     (set-window-buffer other-window-p buffer-this-buffer)
-     (select-window other-window-p)))
-
-(defun cef-move-buffer-up ()
-
-  "Interactive Function Which Swaps The Current Buffer With
-   The Buffer Above The Split.
-   If There Is No Split This Function Will Throw An Error.
-
-   Last Updated: 25.08.2023."
-
+(defun cef-move-window-up ()
+  "Move The Current Window Up."
   (interactive)
+  (cef-move-window 'up))
 
-  (cef-move-buffer up))
-
-(defun cef-move-buffer-down ()
-
-  "Interactive Function Which Swaps The Current Buffer With
-   The Buffer Below The Split.
-   If There Is No Split This Function Will Thow An Error.
-
-   Last Updated: 25.08.2023."
-
+(defun cef-move-window-down ()
+  "Move The Current Window Down."
   (interactive)
+  (cef-move-window 'down))
 
-  (cef-move-buffer down))
-
-(defun cef-move-buffer-left ()
-
-  "Interactive Function Which Swaps The Current Buffer With
-   The Buffer On The Left Of The Split.
-   If There Is No Split This Function Will Throw An Error.
-
-   Last Updated: 25.08.2023."
-
+(defun cef-move-window-left ()
+  "Move The Current Window To The Left."
   (interactive)
+  (cef-move-window 'left))
 
-  (cef-move-buffer left))
-
-(defun cef-move-buffer-right ()
-
-  "Interactive Function Which Swaps The Current Buffer With
-   The Buffer On The Right Of The Split.
-   If There Is No Split This Function Will Throw An Error.
-
-   Last Updated: 25.08.2023."
-
+(defun cef-move-window-right ()
+  "Move The Current Window To The Right."
   (interactive)
-
-  (cef-move-buffer right))
+  (cef-move-window 'right))
 
 ;; => Killing Buffers
 
 (defun cef-kill-current-buffer ()
-
-  "Interactive Function Which Kills The Current Buffer.
-
-   Last Updated: 25.08.2023."
-
+  "Kill The Current Buffer."
   (interactive)
-
   (kill-buffer (buffer-name)))
 
 ;; :==:> Custom Functions
@@ -336,7 +339,7 @@
   `(dolist (url
            (cef-extract-urls-from-string (cef-grap-region-or-line)))
 
-    (shell-command
+    (call-process
      (format "%s \"%s\"" ,browser-cmd url))))
 
 (defun cef-open-url-in-current-browser-session ()
@@ -394,22 +397,14 @@
       (keyboard-escape-quit)
     (rectangle-mark-mode)))
 
-;; => Open A Terminal In The Current Pane
+;; => Open A Terminal
 
 (defun cef-open-terminal ()
-
-  "Interactive Funtion Which Allows You To Open A Terminal Buffer
-   Using The Default User Shell.
-
-   Last Updated: 26.08.2023."
-
+  "Open A Terminal Buffer Using The Default User Shell."
   (interactive)
-
-  ;; Open A Terminal Buffer Using The Default User Shell
   (term (getenv "SHELL"))
-
-  (define-key term-mode-map (kbd "M-x") 'execute-extended-command)
-
+  ;; Deaktivate Line Numbers In Terminal Buffer
+  (display-line-numbers-mode 0)
   ;; Automaticly Kill Buffer When Exiting The Shell
   ;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
   (defadvice term-handle-exit
@@ -419,13 +414,8 @@
 ;; => Inserting Current Date
 
 (defun cef-insert-todays-date ()
-
-  "Interactive Function Which Inserts The Current Date.
-
-   Last Updated: 26.08.2023."
-
+  "Insert The Current Date At Cursor Position."
   (interactive)
-
   (insert
    (format-time-string "%d.%m.%Y")))
 
@@ -433,7 +423,6 @@
 ;; Copied From <https://www.emacswiki.org/emacs/MoveLine>
 
 (defmacro cef-save-column (&rest body)
-  ""
   `(let ((column (current-column)))
      (unwind-protect
          (progn ,@body)
@@ -441,61 +430,79 @@
 (put 'cef-save-column 'lisp-indent-function 0)
 
 (defun cef-move-line-up ()
-  ""
+  "Move The Current Line One Line Up."
   (interactive)
   (cef-save-column
     (transpose-lines 1)
     (forward-line -2)))
 
 (defun cef-move-line-down ()
-  ""
+  "Move The Current Line One Line Down."
   (interactive)
   (cef-save-column
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1)))
 
-;; :==:> Keybindings
+;; => Scroll Up/Down
+;; In Order For This To Work The Variable recenter-postions Has To Be Set To Only middle.
+;; (setq recenter-positions '(middle)) ;; See Basic Settings ^^
 
+(defun cef-scroll-down ()
+  "Scroll Up While Keeping The Cursor In The Center Of The Screen."
+  (interactive)
+  (scroll-up-command)
+  (recenter-top-bottom))
+
+(defun cef-scroll-up ()
+  "Scroll Down While Keeping The Cursor In The Center Of The Screen."
+  (interactive)
+  (scroll-down-command)
+  (recenter-top-bottom))
+
+;; :==:> Keybindings
 ;; Custom Keybinding Definitions
 
-(global-set-key (kbd "C-c w s")			'split-window-vertically)
-(global-set-key (kbd "C-c w v")			'split-window-horizontally)
+(global-set-key (kbd "C-c w s")       'split-window-vertically)
+(global-set-key (kbd "C-c w v")       'split-window-horizontally)
 
-(global-set-key (kbd "C-c w k")			'delete-window)
-(global-set-key (kbd "C-c w z")			'delete-other-windows)
+(global-set-key (kbd "C-c w k")       'delete-window)
+(global-set-key (kbd "C-c w z")       'delete-other-windows)
 
-(global-set-key (kbd "C-c o")			'other-window)
+(global-set-key (kbd "C-c o")         'other-window)
 
-(global-set-key (kbd "C-c w f")			'cef-move-buffer-right)
-(global-set-key (kbd "C-c w b")			'cef-move-buffer-left)
-(global-set-key (kbd "C-c w n")			'cef-move-buffer-down)
-(global-set-key (kbd "C-c w p")			'cef-move-buffer-up)
+(global-set-key (kbd "C-c w f")       'cef-move-window-right)
+(global-set-key (kbd "C-c w b")       'cef-move-window-left)
+(global-set-key (kbd "C-c w n")       'cef-move-window-down)
+(global-set-key (kbd "C-c w p")       'cef-move-window-up)
 
-(global-set-key (kbd "C-.")				'repeat)
+(global-set-key (kbd "C-.")           'repeat)
 
-(global-set-key (kbd "C-,")				'comment-line)
+(global-set-key (kbd "C-,")           'comment-line)
 
-(global-set-key (kbd "C--")				'undo-redo)
-(global-set-key (kbd "C-_")				'undo)
+(global-set-key (kbd "C--")           'undo-redo)
+(global-set-key (kbd "C-_")           'undo)
 
-(global-set-key (kbd "M-p")				'cef-move-line-up)
-(global-set-key (kbd "M-n")				'cef-move-line-down)
+(global-set-key (kbd "M-p")           'cef-move-line-up)
+(global-set-key (kbd "M-n")           'cef-move-line-down)
 
-(global-set-key (kbd "C-c C-c i d")		'cef-insert-todays-date)
-(global-set-key (kbd "C-c C-c o t")		'cef-open-terminal)
+(global-set-key (kbd "C-c C-c i d")   'cef-insert-todays-date)
+(global-set-key (kbd "C-c C-c o t")   'cef-open-terminal)
 
-(global-set-key (kbd "C-SPC")			'toggle-selection)
+(global-set-key (kbd "C-SPC")         'toggle-selection)
 
-(global-set-key (kbd "C-c p")			'mark-paragraph)
-(global-set-key (kbd "C-c r")			'toggle-rectangle-selection)
+(global-set-key (kbd "C-c p")         'mark-paragraph)
+(global-set-key (kbd "C-c r")         'toggle-rectangle-selection)
 
-(global-set-key (kbd "C-c C-c c u")		'cef-copy-url)
+(global-set-key (kbd "C-c C-c c u")   'cef-copy-url)
 
-(global-set-key (kbd "C-c C-c o i b")	'cef-open-url-in-current-browser-session)
-(global-set-key (kbd "C-c C-c o i w")	'cef-open-url-in-new-browser-session)
+(global-set-key (kbd "C-c C-c o i b") 'cef-open-url-in-current-browser-session)
+(global-set-key (kbd "C-c C-c o i w") 'cef-open-url-in-new-browser-session)
 
-(global-set-key (kbd "C-x k")			'cef-kill-current-buffer)
+(global-set-key (kbd "C-x k")         'cef-kill-current-buffer)
+
+(global-set-key (kbd "C-v")           'cef-scroll-down)
+(global-set-key (kbd "M-v")           'cef-scroll-up)
 
 ;; => Fuzzy Finding
 
@@ -569,9 +576,7 @@
   (global-org-modern-mode 1))
 
 (use-package rainbow-mode
-  :ensure t
-  :init
-  (rainbow-mode 1))
+  :ensure t)
 
 ;; => Dired
 
