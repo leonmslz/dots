@@ -171,12 +171,7 @@
 ;; Idea And Code Partially Stolen From <http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html>
 
 (defmacro cef-cycle-through-user-buffers (next-or-prev)
-
-  "Macro For Cycling Through Your Emacs User Buffers.
-  `next-or-prev' Either Takes The Symbol previous-buffer Or next-buffer Which Determines
-  Whether It Should Switch To The Next Or Previous User Buffer.
-
-  Last Updated: 25.08.2023."
+  "Macro For Cycling Through User Buffers."
 
   `(let (start-in-buffer
          end-in-buffer)
@@ -196,26 +191,14 @@
      (when (eq start-in-buffer end-in-buffer)
        (error "There Is Only One User Buffer Available!"))))
 
-(defun cef-next-user-buffer ()
-
-  "Interactive Function Which Switches To The Next User Buffer
-   If Available Otherwise It Will Throw An Error.
-
-   Last Updated: 25.08.2023."
-
+(defun cef-switch-to-next-user-buffer ()
+  "Switch To The Next User Buffer."
   (interactive)
-
   (cef-cycle-through-user-buffers next-buffer))
 
-(defun cef-prev-user-buffer ()
-
-  "Interactive Function Which Switches To The Previous User Buffer
-   If Available Otherwise It Will Throw An Error.
-
-   Last Updated: 25.08.2023."
-
+(defun cef-switch-to-previous-user-buffer ()
+  "Switch To The Previous User Buffer."
   (interactive)
-
   (cef-cycle-through-user-buffers previous-buffer))
 
 ;; => Buffer Movement
@@ -234,7 +217,7 @@
 
     (when (or (null other-window-p)
               (and (eq direction 'down)
-                   (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win)))))
+                   (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-window-p)))))
       (error "Unable To Swap Buffers."))
 
     (set-window-buffer (selected-window) (window-buffer other-window-p))
@@ -460,21 +443,43 @@
   (scroll-down-command)
   (recenter-top-bottom))
 
+;; => Split Window
+
+(defun cef-split-window-on-vertical-axis ()
+  "Split The Current Window On The Vertical Axis."
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1))
+
+(defun cef-split-window-on-horizontal-axis ()
+  "Split The Current Window On The Horizontal Axis."
+  (interactive)
+  (split-window-vertically)
+  (other-window 1))
+
 ;; :==:> Keybindings
 ;; Custom Keybinding Definitions
 
-(global-set-key (kbd "C-c w s")       'split-window-vertically)
-(global-set-key (kbd "C-c w v")       'split-window-horizontally)
-
-(global-set-key (kbd "C-c w k")       'delete-window)
-(global-set-key (kbd "C-c w z")       'delete-other-windows)
-
-(global-set-key (kbd "C-c o")         'other-window)
-
-(global-set-key (kbd "C-c w f")       'cef-move-window-right)
-(global-set-key (kbd "C-c w b")       'cef-move-window-left)
-(global-set-key (kbd "C-c w n")       'cef-move-window-down)
-(global-set-key (kbd "C-c w p")       'cef-move-window-up)
+;; Window/Buffer Related Keybindings
+(bind-keys :prefix-map cef-prefix-window-managment
+           :prefix     "C-c w"
+           ;; Move Windows In A Specific Direction
+           ("f" . cef-move-window-right)
+           ("b" . cef-move-window-left)
+           ("p" . cef-move-window-up)
+           ("n" . cef-move-window-down)
+           ;; Switch Between Windows
+           ("o" . other-window)
+           ;; Close Windows
+           ("z" . delete-other-windows)
+           ("k" . delete-window)
+           ;; Split Current Window
+           ("s" . cef-split-window-on-horizontal-axis)
+           ("v" . cef-split-window-on-vertical-axis)
+           ;; Switch Between User-Buffers
+           ("h" . cef-switch-to-previous-user-buffer)
+           ("l" . cef-switch-to-next-user-buffer)
+           )
 
 (global-set-key (kbd "C-.")           'repeat)
 
