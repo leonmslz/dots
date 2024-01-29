@@ -87,6 +87,9 @@
 ;; Balanced Windows <https://zck.org/balance-emacs-windows>
 (setq window-combination-resize t)
 
+;; Tab For Code Completion
+(setq tab-always-indent 'complete)
+
 ;; Automaticly Follow Symbolic Links
 (setq vc-follow-symlinks t)
 
@@ -114,6 +117,9 @@
 ;; Move Cursor By Subword
 (global-subword-mode t)
 
+;; Automaticly Kill Process Without Confirmation On Exit
+(setq confirm-kill-processes nil)
+
 ;; :==:> Theming / Appereance
 
 ;; => Colorscheming
@@ -139,7 +145,8 @@
 
 ;; => Modeline
 
-(add-hook 'post-command-hook (lambda () (force-mode-line-update t)))
+(add-hook 'post-command-hook (lambda ()
+                               (force-mode-line-update t)))
 
 (defface cef-modeline-face-red
   '((default :inherit (bold)) (t :background "#ff9090" :foreground "black")) "")
@@ -157,15 +164,16 @@
                                   cef-modeline-current-buffer))
   (put cef-modeline-variables 'risky-local-variable t))
 
-(setq-default mode-line-format '("%e"
-                                 (:eval (if (buffer-modified-p) " ✏️ " " 💾 "))
-                                 cef-modeline-current-buffer
-                                 " "
-                                 (:eval (propertize " %l:%c " 'face 'cef-modeline-face-cyan))
-                                 "   "
-                                 cef-modeline-last-command))
+(setq-default mode-line-format
+              '("%e"
+                (:eval (if (buffer-modified-p) " ✏️ " " 💾 "))
+                cef-modeline-current-buffer
+                " "
+                (:eval (propertize " %l:%c " 'face 'cef-modeline-face-cyan))
+                "   "
+                cef-modeline-last-command))
 
-;; :==:> Window And Buffer Managment
+;; :==:> Custom Functions
 
 ;; => Switching User Buffers
 ;; Idea And Code Partially Stolen From <http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html>
@@ -252,147 +260,36 @@
   (interactive)
   (kill-buffer (buffer-name)))
 
-;; :==:> Custom Functions
-
-;; From <https://emacs.stackexchange.com/questions/7148/get-all-regexp-matches-in-buffer-as-a-list>
-(defun cef-multiple-matches (regexp string)
-
-  "Function Which Allows You To Match A Regular Expression Against Multiple
-   Occurrences In A Certain String And Returns Them As A List.
-
-   Last Updated: 26.08.2023."
-
-  (save-match-data
-
-    (let ((pos 0)
-          matches)
-
-      (while (string-match regexp string pos)
-        (push (match-string 0 string) matches)
-        (setq pos (match-end 0)))
-
-      matches)))
-
-(defun cef-grap-region-or-line ()
-
-  "Function Which Checks If There Is A Selected Region Active.
-   If That Is The Case It Will Return The Text From That Region.
-   Otherwise It Will Return The Text From The Current Line.
-
-   Last Updated: 26.08.2023."
-
-  (if mark-active
-
-      (buffer-substring-no-properties
-       (region-beginning)
-       (region-end))
-
-    (buffer-substring-no-properties
-     (point-at-bol)
-     (point-at-eol))))
-
-(defun cef-extract-urls-from-string (string)
-
-  "Function Which Extracts All Of The URLs That Are Part
-   Of A Given String.
-
-   Last Updated: 26.08.2023."
-
-  (let (url-regexp)
-
-    (setq url-regexp
-          "\\b\\(https?://\\|www\\.\\)[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]")
-
-  (cef-multiple-matches url-regexp string)))
-
-;; => Open URL In Browser
-
-(defvar cef-browser "firefox"
-
-  "Global Variable Which Holds The Preffered Browser As A String.")
-
-(defmacro cef-open-url-with (browser-cmd)
-
-  "Macro Which Allows You To Grab All Of The URLs That Are Part
-   Of The Current Region Or Line And Opens Them Using A Given
-   Browser-Command.
-
-   Last Updated: 26.08.2023."
-
-  `(dolist (url
-           (cef-extract-urls-from-string (cef-grap-region-or-line)))
-
-    (call-process
-     (format "%s \"%s\"" ,browser-cmd url))))
-
-(defun cef-open-url-in-current-browser-session ()
-
-  "Interactive Function Which Opens One Or Multiple URLs In
-   The Current Browser Sesssion.
-   If There Is No Session Availeble It Will Open A New One.
-
-   Last Updated: 26.08.2023."
-
-  (interactive)
-
-  (cef-open-url-with cef-browser))
-
-(defun cef-open-url-in-new-browser-session ()
-
-  "Interactive Function Which Opens One Or Multiple URLs In
-   A New Browser Sesssion.
-
-   Last Updated: 26.08.2023."
-
-  (interactive)
-
-  (cef-open-url-with
-   (concat cef-browser " -new-window")))
-
-;; => Copy URL
-
-(defun cef-copy-url ()
-
-  "Interactive Function Which Will Copy All Of The URLs In
-   The Current Line Or Region To Your Kill Ring.
-
-   Last Updated: 26.08.2023."
-
-  (interactive)
-
-  (dolist (url
-           (cef-extract-urls-from-string (cef-grap-region-or-line)))
-    (kill-new url)))
-
-;; => Selecting Text
-
-(defun toggle-selection ()
-  ""
-  (interactive)
-  (if mark-active
-      (keyboard-escape-quit)
-    (set-mark (point))))
-
-(defun toggle-rectangle-selection ()
-  ""
-  (interactive)
-  (if mark-active
-      (keyboard-escape-quit)
-    (rectangle-mark-mode)))
-
 ;; => Open A Terminal
+
+;; Automaticly Kill Buffer When Exiting The Shell
+;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (kill-buffer))
 
 (defun cef-open-terminal ()
   "Open A Terminal Buffer Using The Default User Shell."
   (interactive)
   (term (getenv "SHELL"))
-  ;; Deaktivate Line Numbers In Terminal Buffer
+  ;; Deaktivating Settings That Mess Up Terminal Mode
   (display-line-numbers-mode 0)
-  ;; Automaticly Kill Buffer When Exiting The Shell
-  ;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
-  (defadvice term-handle-exit
-      (after term-kill-buffer-on-exit activate)
-    (kill-buffer)))
+  (setq-local scroll-margin 0))
+
+;; => Open URL
+
+(defun cef-browse-url-at-line ()
+  "Extract A URL From The Current Line And Open It In The Default Web Browser."
+  (interactive)
+  (let*   ((bounds-of-line (bounds-of-thing-at-point 'line))
+           (current-line   (buffer-substring-no-properties (car bounds-of-line) (cdr bounds-of-line)))
+           (url-regex      "\\bhttps?://[[:alnum:]#%$&\\?()~_+=/\\.-]+\\b"))
+    (if (string-match url-regex current-line)
+        (progn
+          (setq-local url-as-string (match-string 0 current-line))
+          (message (format "Opening `%s` In The Default Web Browser." url-as-string))
+          (browse-url url-as-string))
+      (error "Unable To Extract URL From Current Line."))))
 
 ;; => Inserting Current Date
 
@@ -457,57 +354,90 @@
   (split-window-vertically)
   (other-window 1))
 
+;; => Delete Text
+
+(defun cef-delete-text ()
+  "Delete Text Into Kill Ring If Selected, Otherwise Delete Character."
+  (interactive)
+  (if mark-active
+      (kill-region (region-beginning) (region-end))
+    (delete-char 1)))
+
 ;; :==:> Keybindings
 ;; Custom Keybinding Definitions
 
 ;; Window/Buffer Related Keybindings
-(bind-keys :prefix-map cef-prefix-window-managment
-           :prefix     "C-c w"
-           ;; Move Windows In A Specific Direction
-           ("f" . cef-move-window-right)
-           ("b" . cef-move-window-left)
-           ("p" . cef-move-window-up)
-           ("n" . cef-move-window-down)
-           ;; Switch Between Windows
-           ("o" . other-window)
-           ;; Close Windows
-           ("z" . delete-other-windows)
-           ("k" . delete-window)
-           ;; Split Current Window
-           ("s" . cef-split-window-on-horizontal-axis)
-           ("v" . cef-split-window-on-vertical-axis)
-           ;; Switch Between User-Buffers
-           ("h" . cef-switch-to-previous-user-buffer)
-           ("l" . cef-switch-to-next-user-buffer)
-           )
+(defvar-keymap cef-prefix-window-and-buffer-managment
+  :doc "Nested Prefix ´C-c w´ for Window Managment Related Commands."
+  ; Move Windows In A Specific Direction
+  "f" #'cef-move-window-right
+  "b" #'cef-move-window-left
+  "p" #'cef-move-window-up
+  "n" #'cef-move-window-down
+  ; Close Windows
+  "z" #'delete-other-windows
+  "k" #'delete-window
+  ; Split Current Window
+  "s" #'cef-split-window-on-horizontal-axis
+  "v" #'cef-split-window-on-vertical-axis
+  ; Switch Between User-Buffers
+  "h" #'cef-switch-to-previous-user-buffer
+  "l" #'cef-switch-to-next-user-buffer)
 
-(global-set-key (kbd "C-.")           'repeat)
+(defvar-keymap cef-prefix-editing-commands
+  :doc "C-c e"
+  "s" #'replace-string
+  "r" #'replace-regexp
+  "t" #'replace-rectangle
 
-(global-set-key (kbd "C-,")           'comment-line)
+  "w" #'mark-word
+  "p" #'mark-paragraph)
 
-(global-set-key (kbd "C--")           'undo-redo)
-(global-set-key (kbd "C-_")           'undo)
+(defvar-keymap cef-prefix-complex-commands
+  :doc "C-c C-c"
+  "b" #'cef-browse-url-at-line
+  "t" #'cef-open-terminal)
 
-(global-set-key (kbd "M-p")           'cef-move-line-up)
-(global-set-key (kbd "M-n")           'cef-move-line-down)
+;; General Keymap For Custom User Bindings
+(defvar-keymap cef-prefix-general-user-bindings
+  :doc "Prefix ´C-c´ for General Bindings."
+  "f" #'forward-paragraph
+  "b" #'backward-paragraph
+  "k" #'cef-kill-current-buffer
+  "p" #'mark-paragraph
+  "r" #'rectangle-mark-mode
+  "i" #'string-rectangle
+  ; Switch Between Windows
+  "o" #'other-window
+  ; --- Nested Keymaps ---
+  "w" cef-prefix-window-and-buffer-managment
+  "e" cef-prefix-editing-commands
+  "C-c" cef-prefix-complex-commands)
 
-(global-set-key (kbd "C-c C-c i d")   'cef-insert-todays-date)
-(global-set-key (kbd "C-c C-c o t")   'cef-open-terminal)
+(global-set-key (kbd "C-c") cef-prefix-general-user-bindings)
 
-(global-set-key (kbd "C-SPC")         'toggle-selection)
+;; Other Bindings
+(global-set-key (kbd "C-.") 'repeat)
 
-(global-set-key (kbd "C-c p")         'mark-paragraph)
-(global-set-key (kbd "C-c r")         'toggle-rectangle-selection)
+(global-set-key (kbd "C-,") 'comment-line)
 
-(global-set-key (kbd "C-c C-c c u")   'cef-copy-url)
+(global-set-key (kbd "C--") 'undo-redo)
+(global-set-key (kbd "C-_") 'undo)
 
-(global-set-key (kbd "C-c C-c o i b") 'cef-open-url-in-current-browser-session)
-(global-set-key (kbd "C-c C-c o i w") 'cef-open-url-in-new-browser-session)
+(global-set-key (kbd "M-p") 'cef-move-line-up)
+(global-set-key (kbd "M-n") 'cef-move-line-down)
 
-(global-set-key (kbd "C-x k")         'cef-kill-current-buffer)
+(global-set-key (kbd "C-v") 'cef-scroll-down)
+(global-set-key (kbd "M-v") 'cef-scroll-up)
 
-(global-set-key (kbd "C-v")           'cef-scroll-down)
-(global-set-key (kbd "M-v")           'cef-scroll-up)
+(global-set-key (kbd "C-d") 'cef-delete-text)
+
+;; => Auto Complete
+
+(use-package auto-complete
+  :ensure t
+  :init
+  (auto-complete-mode))
 
 ;; => Fuzzy Finding
 
