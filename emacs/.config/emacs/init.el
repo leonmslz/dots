@@ -360,11 +360,34 @@
   "Delete Text Into Kill Ring If Selected, Otherwise Delete Character."
   (interactive)
   (if mark-active
-      (kill-region (region-beginning) (region-end))
+      (delete-active-region t)
     (delete-char 1)))
 
 ;; :==:> Keybindings
 ;; Custom Keybinding Definitions
+
+;; => Which-Key
+;; "Emacs package that displays available keybindings in popup" <https://github.com/justbur/emacs-which-key>
+(use-package which-key
+  :ensure t
+  :init
+  (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+        which-key-allow-imprecise-window-fit nil
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 5
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6
+        which-key-side-window-slot -10
+        which-key-side-window-max-height 0.25
+        which-key-idle-delay 0.8
+        which-key-max-description-length 40
+        which-key-allow-imprecise-window-fit nil
+        which-key-separator " → "))
+
+;; => Custom Keymaps
 
 ;; Window/Buffer Related Keybindings
 (defvar-keymap cef-prefix-window-and-buffer-managment
@@ -377,6 +400,8 @@
   ; Close Windows
   "z" #'delete-other-windows
   "k" #'delete-window
+  ; Switch Between Windows
+  "o" #'other-window
   ; Split Current Window
   "s" #'cef-split-window-on-horizontal-axis
   "v" #'cef-split-window-on-vertical-axis
@@ -401,8 +426,6 @@
 ;; General Keymap For Custom User Bindings
 (defvar-keymap cef-prefix-general-user-bindings
   :doc "Prefix ´C-c´ for General Bindings."
-  "f" #'forward-paragraph
-  "b" #'backward-paragraph
   "k" #'cef-kill-current-buffer
   "p" #'mark-paragraph
   "r" #'rectangle-mark-mode
@@ -416,7 +439,7 @@
 
 (global-set-key (kbd "C-c") cef-prefix-general-user-bindings)
 
-;; Other Bindings
+;; => Other Bindings
 (global-set-key (kbd "C-.") 'repeat)
 
 (global-set-key (kbd "C-,") 'comment-line)
@@ -430,6 +453,9 @@
 (global-set-key (kbd "C-v") 'cef-scroll-down)
 (global-set-key (kbd "M-v") 'cef-scroll-up)
 
+(global-set-key (kbd "C-r") 'forward-paragraph)
+(global-set-key (kbd "M-r") 'backward-paragraph)
+
 (global-set-key (kbd "C-d") 'cef-delete-text)
 
 ;; => Auto Complete
@@ -437,7 +463,7 @@
 (use-package auto-complete
   :ensure t
   :init
-  (auto-complete-mode))
+  (global-auto-complete-mode))
 
 ;; => Fuzzy Finding
 
@@ -463,7 +489,8 @@
 
 (use-package consult
   :ensure t
-  :bind (("C-u"     . consult-buffer)
+  :bind (
+         ;; ("C-u"     . consult-buffer)
          ("C-x b"   . consult-buffer)
          ("C-c m b" . consult-buffer)
          ("C-c m t" . consult-theme)
