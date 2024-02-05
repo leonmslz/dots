@@ -2,7 +2,7 @@
 ;; Configuration File For GNU Emacs
 ;; By Leon Schulz
 
-;; :==:> Package Managment
+;; :==:> Package Management
 
 ;; => MELPA Repositories
 ;; Milkypostman’s Emacs Lisp Package Archive <https://melpa.org/>
@@ -120,20 +120,24 @@
 ;; Automaticly Kill Process Without Confirmation On Exit
 (setq confirm-kill-processes nil)
 
-;; :==:> Theming / Appereance
+;; Flyspell
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+;; :==:> Theming / Appearance
 
 ;; => Colorscheming
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-solarized-light t))
+  (load-theme 'doom-gruvbox t))
 
 ;; => Font-Face
 (set-face-attribute 'default
                     nil
                     :family "Iosevka"
                     :height 105
-                    :weight 'semilight)
+                    :weight 'regular)
 
 ;; Custom Faces For Org-Mode
 (custom-set-faces
@@ -145,33 +149,25 @@
 
 ;; => Modeline
 
-(add-hook 'post-command-hook (lambda ()
-                               (force-mode-line-update t)))
+(custom-set-faces
+ '(mode-line          ((t (:box (:line-width 6 :color "black")))))
+ '(mode-line-inactive ((t (:box (:line-width 6 :color "gray10"))))))
 
-(defface cef-modeline-face-red
-  '((default :inherit (bold)) (t :background "#ff9090" :foreground "black")) "")
+(setq mode-line-format
+      '("%e"
 
-(defface cef-modeline-face-cyan
-  '((default :inherit ()) (t :background "#94d2bd" :foreground "black")) "")
+        (:eval (if (buffer-modified-p)
+                   " ✏️ "
+                 " 💾 "))
 
-(defvar-local cef-modeline-current-buffer
-    '(:eval (format " %s " (propertize (buffer-name) 'face 'italic))))
+        (:eval (format " %s "
+                       (propertize (buffer-name)
+                                   'face 'italic)))
 
-(defvar-local cef-modeline-last-command
-    '(:eval (propertize (format " %s " (symbol-name last-repeatable-command)) 'face 'cef-modeline-face-red)))
+        (:eval (propertize " %l:%c "
+                           'face 'bold))))
 
-(dolist (cef-modeline-variables '(cef-modeline-last-command
-                                  cef-modeline-current-buffer))
-  (put cef-modeline-variables 'risky-local-variable t))
-
-(setq-default mode-line-format
-              '("%e"
-                (:eval (if (buffer-modified-p) " ✏️ " " 💾 "))
-                cef-modeline-current-buffer
-                " "
-                (:eval (propertize " %l:%c " 'face 'cef-modeline-face-cyan))
-                "   "
-                cef-modeline-last-command))
+(setq-default mode-line-format mode-line-format)
 
 ;; :==:> Custom Functions
 
@@ -340,6 +336,20 @@
   (scroll-down-command)
   (recenter-top-bottom))
 
+;; => Jump By Paragraph
+
+(defun cef-jump-paragraph-up ()
+  "Jump By Paragraph Upwards."
+  (interactive)
+  (backward-paragraph)
+  (recenter-top-bottom))
+
+(defun cef-jump-paragraph-down ()
+  "Jump By Paragraph Downwards."
+  (interactive)
+  (forward-paragraph)
+  (recenter-top-bottom))
+
 ;; => Split Window
 
 (defun cef-split-window-on-vertical-axis ()
@@ -387,7 +397,7 @@
         which-key-allow-imprecise-window-fit nil
         which-key-separator " → "))
 
-;; => Custom Keymaps
+;; => Custom Key-Mappings
 
 ;; Window/Buffer Related Keybindings
 (defvar-keymap cef-prefix-window-and-buffer-managment
@@ -420,6 +430,8 @@
 
 (defvar-keymap cef-prefix-complex-commands
   :doc "C-c C-c"
+  "e" #'emoji-insert
+  "s" #'scratch-buffer
   "b" #'cef-browse-url-at-line
   "t" #'cef-open-terminal)
 
@@ -439,6 +451,15 @@
 
 (global-set-key (kbd "C-c") cef-prefix-general-user-bindings)
 
+;; Flyspell-Mode Mappings
+(add-hook 'flyspell-mode-hook
+          (lambda ()
+            (define-key flyspell-mode-map (kbd "C-.") nil)
+            (define-key flyspell-mode-map (kbd "M-TAB") nil)
+
+            (define-key flyspell-mode-map (kbd "C-c C-c w") 'flyspell-auto-correct-word)
+            ))
+
 ;; => Other Bindings
 (global-set-key (kbd "C-.") 'repeat)
 
@@ -453,8 +474,8 @@
 (global-set-key (kbd "C-v") 'cef-scroll-down)
 (global-set-key (kbd "M-v") 'cef-scroll-up)
 
-(global-set-key (kbd "C-r") 'forward-paragraph)
-(global-set-key (kbd "M-r") 'backward-paragraph)
+(global-set-key (kbd "C-r") 'cef-jump-paragraph-down)
+(global-set-key (kbd "M-r") 'cef-jump-paragraph-up)
 
 (global-set-key (kbd "C-d") 'cef-delete-text)
 
@@ -499,55 +520,17 @@
 
 ;; => Language Support
 
-(use-package go-mode
-  :ensure t)
+;; List With Languages To Install
+(setq cef-languages '(go-mode
+                      lua-mode
+                      yaml-mode
+                      markdown-mode
+                      rust-mode
+                      csharp-mode
+                      dockerfile-mode
+                      haskell-mode
+                      python-mode))
 
-(use-package lua-mode
-  :ensure t)
-
-(use-package yaml-mode
-  :ensure t)
-
-(use-package markdown-mode
-  :ensure t)
-
-(use-package rust-mode
-  :ensure t)
-
-(use-package csharp-mode
-  :ensure t)
-
-(use-package dockerfile-mode
-  :ensure t)
-
-(use-package haskell-mode
-  :ensure t)
-
-(use-package python-mode
-  :ensure t)
-
-;; => Org Mode
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-
-(add-hook 'org-mode-hook (lambda () (electric-indent-mode 0)))
-
-(use-package org-modern
-  :ensure t
-  :init
-  (global-org-modern-mode 1))
-
-(use-package rainbow-mode
-  :ensure t)
-
-;; => Dired
-
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
-
-(use-package all-the-icons
-  :ensure t)
-
-(use-package all-the-icons-dired
-  :ensure t
-  :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+;; Install All Language-Modes
+(dolist (language cef-languages)
+  `(use-package ,language :ensure t))
