@@ -36,6 +36,14 @@
                      (emacs-init-time "%.2f")
                      gcs-done)))
 
+;; => Emacs Server / Daemon
+
+(use-package server
+  :ensure t
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
 ;; => Encodings
 
 ;; UTF-8 As Default Encoding
@@ -350,6 +358,25 @@
   (forward-paragraph)
   (recenter-top-bottom))
 
+;; => Auto-create Missing Directories
+;; Reference: <https://emacsredux.com/blog/2022/06/12/auto-create-missing-directories/>
+
+;; Alternative To The Code Below Using An Advice:
+; (defun cef-auto-create-missing-dirs-find-file (orig-fun &rest args)
+;   (let* ((filename (car args))
+;          (target-dir (file-name-directory filename)))
+;     (unless (file-directory-p target-dir)
+;       (make-directory target-dir t))
+;     (apply orig-fun args)))
+; (advice-add 'find-file :around #'cef-auto-create-missing-dirs-find-file)
+
+(defun cef-auto-create-missing-dirs-find-file ()
+  (let ((target-dir (file-name-directory buffer-file-name)))
+    (unless (file-exists-p target-dir)
+      (make-directory target-dir t))))
+
+(add-to-list 'find-file-not-found-functions #'cef-auto-create-missing-dirs-find-file)
+
 ;; => Split Window
 
 (defun cef-split-window-on-vertical-axis ()
@@ -455,6 +482,7 @@
 (add-hook 'flyspell-mode-hook
           (lambda ()
             (define-key flyspell-mode-map (kbd "C-.") nil)
+            (define-key flyspell-mode-map (kbd "C-,") nil)
             (define-key flyspell-mode-map (kbd "M-TAB") nil)
 
             (define-key flyspell-mode-map (kbd "C-c C-c w") 'flyspell-auto-correct-word)
