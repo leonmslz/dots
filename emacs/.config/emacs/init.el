@@ -80,7 +80,7 @@
 (scroll-bar-mode -1)
 (tooltip-mode    -1)
 
-;; Change Default Scrolling Behaviour
+;; Change Default Scrolling Behavior
 (setq scroll-conservatively 10000)
 (setq scroll-preserve-screen-position 'always)
 (setq mouse-wheel-progressive-speed nil)
@@ -91,6 +91,9 @@
 (setq-default auto-save-default nil)
 (setq-default create-lockfiles nil)
 (setq-default make-backup-files nil)
+
+;; Automatically Revert Buffer On Changes
+(global-auto-revert-mode t)
 
 ;; Balanced Windows <https://zck.org/balance-emacs-windows>
 (setq window-combination-resize t)
@@ -131,6 +134,9 @@
 ;; Flyspell
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+;; Dired
+(setq dired-kill-when-opening-new-dired-buffer t)
 
 ;; :==:> Theming / Appearance
 
@@ -276,9 +282,11 @@
   "Open A Terminal Buffer Using The Default User Shell."
   (interactive)
   (term (getenv "SHELL"))
-  ;; Deaktivating Settings That Mess Up Terminal Mode
+  ;; Deactivating Settings That Mess Up Terminal Mode
   (display-line-numbers-mode 0)
-  (setq-local scroll-margin 0))
+  (setq-local scroll-margin 0)
+  ;; Rename Terminal Buffer So That The User Can Open Multiple Term-Buffers
+  (rename-buffer (format "%s %s" (buffer-name) (format-time-string "%s")) t))
 
 ;; => Open URL
 
@@ -349,14 +357,14 @@
 (defun cef-jump-paragraph-up ()
   "Jump By Paragraph Upwards."
   (interactive)
-  (backward-paragraph)
-  (recenter-top-bottom))
+  (backward-paragraph))
+  ;; (recenter-top-bottom))
 
 (defun cef-jump-paragraph-down ()
   "Jump By Paragraph Downwards."
   (interactive)
-  (forward-paragraph)
-  (recenter-top-bottom))
+  (forward-paragraph))
+  ;; (recenter-top-bottom))
 
 ;; => Auto-create Missing Directories
 ;; Reference: <https://emacsredux.com/blog/2022/06/12/auto-create-missing-directories/>
@@ -400,6 +408,31 @@
       (delete-active-region t)
     (delete-char 1)))
 
+;; => Dired Related Functions
+
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (display-line-numbers-mode 0)
+            (setq-local scroll-margin 0)))
+
+;; Open Dired In Place
+(defun cef-open-dired-current-directory ()
+  "Open Dired In Place."
+  (interactive)
+  (dired "."))
+
+;; Open Dired In Home Folder
+(defun cef-open-dired-home-directory ()
+  "Open Dired In Home Folder."
+  (interactive)
+  (dired "~"))
+
+;; Go Up A Directory
+(defun cef-dired-directory-up ()
+  "Move Up A Directory."
+  (interactive)
+  (find-alternate-file ".."))
+
 ;; :==:> Keybindings
 ;; Custom Keybinding Definitions
 
@@ -424,7 +457,7 @@
         which-key-allow-imprecise-window-fit nil
         which-key-separator " → "))
 
-;; => Custom Key-Mappings
+;; => C-c Keybindings
 
 ;; Window/Buffer Related Keybindings
 (defvar-keymap cef-prefix-window-and-buffer-managment
@@ -446,6 +479,7 @@
   "h" #'cef-switch-to-previous-user-buffer
   "l" #'cef-switch-to-next-user-buffer)
 
+;; Keybindings For Manipulating Text
 (defvar-keymap cef-prefix-editing-commands
   :doc "C-c e"
   "s" #'replace-string
@@ -455,6 +489,7 @@
   "w" #'mark-word
   "p" #'mark-paragraph)
 
+;; More Verbose Keybindings
 (defvar-keymap cef-prefix-complex-commands
   :doc "C-c C-c"
   "e" #'emoji-insert
@@ -469,6 +504,9 @@
   "p" #'mark-paragraph
   "r" #'rectangle-mark-mode
   "i" #'string-rectangle
+  ; Dired
+  "d" #'cef-open-dired-current-directory
+  "h" #'cef-open-dired-home-directory
   ; Switch Between Windows
   "o" #'other-window
   ; --- Nested Keymaps ---
@@ -478,34 +516,50 @@
 
 (global-set-key (kbd "C-c") cef-prefix-general-user-bindings)
 
+;; => Major Mode Specific Bindings
+
 ;; Flyspell-Mode Mappings
-(add-hook 'flyspell-mode-hook
-          (lambda ()
-            (define-key flyspell-mode-map (kbd "C-.") nil)
-            (define-key flyspell-mode-map (kbd "C-,") nil)
-            (define-key flyspell-mode-map (kbd "M-TAB") nil)
+(require 'flyspell)
+(defvar-keymap cef-flyspell-mode
+  :doc    "Custom Keybindings For Flyspell Major Mode."
+  :keymap flyspell-mode-map
+  ; Disable Flyspell Keys That Conflict With Other Bindings.
+  "C-."   nil
+  "C-,"   nil
+  "M-TAB" nil
+  ; Auto-Correct
+  "C-c C-c w" #'flyspell-auto-correct-word)
 
-            (define-key flyspell-mode-map (kbd "C-c C-c w") 'flyspell-auto-correct-word)
-            ))
+;; Dired Keybindings
+(require 'dired)
+(defvar-keymap cef-dired-mode
+  :doc    "Custom Keybindings For Dired Major Mode."
+  :keymap dired-mode-map
+  "u" #'cef-dired-directory-up)
 
-;; => Other Bindings
-(global-set-key (kbd "C-.") 'repeat)
+;; => First Level Global Bindings
 
-(global-set-key (kbd "C-,") 'comment-line)
+(defvar-keymap cef-global-mode
+  :doc ""
+  :keymap global-map
 
-(global-set-key (kbd "C--") 'undo-redo)
-(global-set-key (kbd "C-_") 'undo)
+  "C-." #'repeat
 
-(global-set-key (kbd "M-p") 'cef-move-line-up)
-(global-set-key (kbd "M-n") 'cef-move-line-down)
+  "C-," #'comment-line
 
-(global-set-key (kbd "C-v") 'cef-scroll-down)
-(global-set-key (kbd "M-v") 'cef-scroll-up)
+  "C--" #'undo-redo
+  "C-_" #'undo
 
-(global-set-key (kbd "C-r") 'cef-jump-paragraph-down)
-(global-set-key (kbd "M-r") 'cef-jump-paragraph-up)
+  "M-p" #'cef-move-line-up
+  "M-n" #'cef-move-line-down
 
-(global-set-key (kbd "C-d") 'cef-delete-text)
+  "C-v" #'cef-scroll-down
+  "M-v" #'cef-scroll-up
+
+  "C-r" #'cef-jump-paragraph-down
+  "M-r" #'cef-jump-paragraph-up
+
+  "C-d" #'cef-delete-text)
 
 ;; => Auto Complete
 
