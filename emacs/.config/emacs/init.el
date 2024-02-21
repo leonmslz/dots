@@ -1,8 +1,18 @@
 ;; init.el
+;;  ______                             _____             __ _
+;; |  ____|                           / ____|           / _(_)
+;; | |__   _ __ ___   __ _  ___ ___  | |     ___  _ __ | |_ _  __ _
+;; |  __| | '_ ` _ \ / _` |/ __/ __| | |    / _ \| '_ \|  _| |/ _` |
+;; | |____| | | | | | (_| | (__\__ \ | |___| (_) | | | | | | | (_| |
+;; |______|_| |_| |_|\__,_|\___|___/  \_____\___/|_| |_|_| |_|\__, |
+;;                                                             __/ |
+;;                                                            |___/
 ;; Configuration File For GNU Emacs
 ;; By Leon Schulz
 
-;; :==:> Package Management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package Management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; => MELPA Repositories
 ;; Milkypostman’s Emacs Lisp Package Archive <https://melpa.org/>
@@ -21,7 +31,9 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; :==:> General Settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Emacs On-Startup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; => Emacs Startup Time
 ;; Display Emacs Startup Time On Startup :D <https://github.com/daviwil/dotfiles>
@@ -44,15 +56,15 @@
   (unless (server-running-p)
     (server-start)))
 
-;; => Encodings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; General Settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; UTF-8 As Default Encoding
 (set-language-environment    'utf-8)
 (set-default-coding-systems  'utf-8)
 (set-keyboard-coding-system  'utf-8-unix)
 (set-terminal-coding-system  'utf-8-unix)
-
-;; => Basic Options
 
 ;; Relative Line Numbers
 (setq display-line-numbers-type 'relative)
@@ -138,15 +150,19 @@
 ;; Dired
 (setq dired-kill-when-opening-new-dired-buffer t)
 
-;; :==:> Theming / Appearance
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Theming / Appearance
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; => Colorscheming
+;; :==:> Colorscheme
+
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-wilmersdorf t))
 
-;; => Font-Face
+;; :==:> Font-Face
+
 (set-face-attribute 'default
                     nil
                     :family "Iosevka"
@@ -161,7 +177,7 @@
  '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 
-;; => Modeline
+;; :==:> Mode-Line
 
 (custom-set-faces
  '(mode-line          ((t (:box (:line-width 6 :color "black")))))
@@ -183,7 +199,9 @@
 
 (setq-default mode-line-format mode-line-format)
 
-;; :==:> Custom Functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Custom Functionality
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; => Switching User Buffers
 ;; Idea And Code Partially Stolen From <http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html>
@@ -433,8 +451,9 @@
   (interactive)
   (find-alternate-file ".."))
 
-;; :==:> Keybindings
-;; Custom Keybinding Definitions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Custom Key-Binding Definitions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; => Which-Key
 ;; "Emacs package that displays available keybindings in popup" <https://github.com/justbur/emacs-which-key>
@@ -486,6 +505,8 @@
   "r" #'replace-regexp
   "t" #'replace-rectangle
 
+  "a" #'align-regexp
+
   "w" #'mark-word
   "p" #'mark-paragraph)
 
@@ -536,6 +557,14 @@
   :doc    "Custom Keybindings For Dired Major Mode."
   :keymap dired-mode-map
   "u" #'cef-dired-directory-up)
+
+;; Term-Mode Keybindings
+(require 'term)
+(defvar-keymap cef-term-mode
+  :doc    "Custom Keybindings For Term Major Mode."
+  :keymap term-raw-map
+  ; Disable Term-Mode Keys That Conflict With Other Bindings.
+  "C-c w" nil)
 
 ;; => First Level Global Bindings
 
