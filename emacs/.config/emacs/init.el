@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; init.el
 ;;  ______                             _____             __ _
 ;; |  ____|                           / ____|           / _(_)
@@ -9,6 +10,10 @@
 ;;                                                            |___/
 ;; Configuration File For GNU Emacs
 ;; By Leon Schulz
+
+(defgroup cef-emacs-configuration nil
+  "Custom GNU Emacs Configuration By Leon Schulz."
+  :prefix 'cef)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package Management
@@ -110,6 +115,9 @@
 ;; Balanced Windows <https://zck.org/balance-emacs-windows>
 (setq window-combination-resize t)
 
+;; Text-Scale Adjust Step
+(setq-default text-scale-mode-amount 1.1)
+
 ;; Tab For Code Completion
 (setq tab-always-indent 'complete)
 
@@ -156,17 +164,25 @@
 
 ;; :==:> Colorscheme
 
-(use-package doom-themes
+(use-package ef-themes
   :ensure t
   :config
-  (load-theme 'doom-wilmersdorf t))
+  (load-theme 'ef-cyprus t))
 
 ;; :==:> Font-Face
+
+(defcustom cef-default-font-size 10.5
+  "Default Font Size For All Emacs UI-Elements."
+  :group 'cef-emacs-configuration)
+
+(defcustom cef-huge-font-size 15.0
+  "Huge Font Size For All Emacs UI-Elements."
+  :group 'cef-emacs-configuration)
 
 (set-face-attribute 'default
                     nil
                     :family "Iosevka"
-                    :height 105
+                    :height (round (* 10 cef-default-font-size))
                     :weight 'regular)
 
 ;; Custom Faces For Org-Mode
@@ -179,16 +195,28 @@
 
 ;; :==:> Mode-Line
 
+(defgroup cef-mode-line nil
+  "Custom Minimalistic Mode-Line."
+  :group 'cef-emacs-configuration)
+
 (custom-set-faces
  '(mode-line          ((t (:box (:line-width 6 :color "black")))))
  '(mode-line-inactive ((t (:box (:line-width 6 :color "gray10"))))))
+
+(defcustom cef-mode-line-edited-emoji "✏️"
+  "Emoji Which Shows Up In Mode-Line When The Current Buffer Was Edited."
+  :group 'cef-mode-line)
+
+(defcustom cef-mode-line-saved-emoji "💾️"
+  "Emoji Which Shows Up In Mode-Line When The Current Buffer Was Saved."
+  :group 'cef-mode-line)
 
 (setq mode-line-format
       '("%e"
 
         (:eval (if (buffer-modified-p)
-                   " ✏️ "
-                 " 💾 "))
+                   (format " %s " cef-mode-line-edited-emoji)
+                 (format " %s " cef-mode-line-saved-emoji)))
 
         (:eval (format " %s "
                        (propertize (buffer-name)
@@ -426,12 +454,29 @@
       (delete-active-region t)
     (delete-char 1)))
 
+;; => Apply Default Font-Size
+
+(defun cef-apply-default-font-size ()
+  "Set The Font Size Of All Emacs UI-Elements Back To The Value Of 'cef-default-font-size."
+  (interactive)
+  (set-face-attribute 'default
+                      nil
+                      :height (round (* 10 cef-default-font-size))))
+
+(defun cef-apply-huge-font-size ()
+  "Set The Font Size Of All Emacs UI-Elements Back To The Value Of 'cef-default-font-size."
+  (interactive)
+  (set-face-attribute 'default
+                      nil
+                      :height (round (* 10 cef-huge-font-size))))
+
 ;; => Dired Related Functions
 
 (add-hook 'dired-mode-hook
           (lambda ()
             (display-line-numbers-mode 0)
-            (setq-local scroll-margin 0)))
+            (setq-local scroll-margin 0)
+            (all-the-icons-dired-mode t)))
 
 ;; Open Dired In Place
 (defun cef-open-dired-current-directory ()
@@ -450,6 +495,73 @@
   "Move Up A Directory."
   (interactive)
   (find-alternate-file ".."))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Additional Packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; => All the Icons
+
+(use-package all-the-icons
+  :ensure t)
+
+;; => Auto Complete
+
+(use-package auto-complete
+  :ensure t
+  :init
+  (global-auto-complete-mode))
+
+;; => Fuzzy Finding
+
+(use-package vertico
+  :ensure t
+  :custom
+  (vertico-cycle t)
+  (vertico-count 15)
+  :init
+  (vertico-mode))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package marginalia
+  :after vertico
+  :ensure t
+  :custom
+  (marginalia-align 'right)
+  :init
+  (marginalia-mode))
+
+(use-package consult
+  :ensure t
+  :bind (
+         ;; ("C-u"     . consult-buffer)
+         ("C-x b"   . consult-buffer)
+         ("C-c m b" . consult-buffer)
+         ("C-c m t" . consult-theme)
+         ("C-c m f" . consult-line)
+         ("C-c m y" . consult-yank-pop)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Language Support
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; List With Languages To Install
+(setq cef-languages '(go-mode
+                      lua-mode
+                      yaml-mode
+                      markdown-mode
+                      rust-mode
+                      csharp-mode
+                      dockerfile-mode
+                      haskell-mode
+                      python-mode))
+
+;; Install All Language-Modes
+(dolist (language cef-languages)
+  `(use-package ,language :ensure t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom Key-Binding Definitions
@@ -479,8 +591,8 @@
 ;; => C-c Keybindings
 
 ;; Window/Buffer Related Keybindings
-(defvar-keymap cef-prefix-window-and-buffer-managment
-  :doc "Nested Prefix ´C-c w´ for Window Managment Related Commands."
+(defvar-keymap cef-prefix-window-and-buffer-management
+  :doc "Nested Prefix ´C-c w´ for Window Management Related Commands."
   ; Move Windows In A Specific Direction
   "f" #'cef-move-window-right
   "b" #'cef-move-window-left
@@ -531,7 +643,7 @@
   ; Switch Between Windows
   "o" #'other-window
   ; --- Nested Keymaps ---
-  "w" cef-prefix-window-and-buffer-managment
+  "w" cef-prefix-window-and-buffer-management
   "e" cef-prefix-editing-commands
   "C-c" cef-prefix-complex-commands)
 
@@ -588,60 +700,9 @@
   "C-r" #'cef-jump-paragraph-down
   "M-r" #'cef-jump-paragraph-up
 
-  "C-d" #'cef-delete-text)
-
-;; => Auto Complete
-
-(use-package auto-complete
-  :ensure t
-  :init
-  (global-auto-complete-mode))
-
-;; => Fuzzy Finding
-
-(use-package vertico
-  :ensure t
-  :custom
-  (vertico-cycle t)
-  (vertico-count 15)
-  :init
-  (vertico-mode))
-
-(use-package savehist
-  :init
-  (savehist-mode))
-
-(use-package marginalia
-  :after vertico
-  :ensure t
-  :custom
-  (marginalia-align 'right)
-  :init
-  (marginalia-mode))
-
-(use-package consult
-  :ensure t
-  :bind (
-         ;; ("C-u"     . consult-buffer)
-         ("C-x b"   . consult-buffer)
-         ("C-c m b" . consult-buffer)
-         ("C-c m t" . consult-theme)
-         ("C-c m f" . consult-line)
-         ("C-c m y" . consult-yank-pop)))
-
-;; => Language Support
-
-;; List With Languages To Install
-(setq cef-languages '(go-mode
-                      lua-mode
-                      yaml-mode
-                      markdown-mode
-                      rust-mode
-                      csharp-mode
-                      dockerfile-mode
-                      haskell-mode
-                      python-mode))
-
-;; Install All Language-Modes
-(dolist (language cef-languages)
-  `(use-package ,language :ensure t))
+  "C-d" #'cef-delete-text
+  ; Global Font-Size Adjustments
+  "C-x C-+" #'global-text-scale-adjust
+  "C-x C--" #'global-text-scale-adjust
+  "C-x C-0" #'cef-apply-default-font-size
+  "C-x C-1" #'cef-apply-huge-font-size)
