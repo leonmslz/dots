@@ -22,10 +22,6 @@ in
     ./hardware.nix
   ];
 
-#  boot.loader.grub.enable = true;
-#  boot.loader.grub.device = "/dev/sda";
-#  boot.loader.grub.useOSProber = true;
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -50,10 +46,9 @@ in
   };
 
   services.xserver.enable = true;
-
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.libinput.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.displayManager.sddm.wayland.enable = true;
 
   services.xserver.xkb = {
     layout = "de";
@@ -63,6 +58,9 @@ in
   console.keyMap = "de";
 
   services.printing.enable = true;
+
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -89,30 +87,56 @@ in
   users.defaultUserShell = pkgs.zsh;
 
   programs.hyprland.enable = true;
+  programs.hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  programs.hyprland.xwayland.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = false;
 
+  services.openssh.enable = true;
+
   environment.systemPackages = with pkgs; [
+
+    # Program's
     vim
     emacs
-    htop
+    alacritty
+    pcmanfm
     firefox
+
+    # Utility's
+    htop
+    pfetch
+    eza
     tree
     ispell
-    pfetch
+    swww
+    killall
+    hyprpicker
+    wl-clipboard
+
+    minecraft
+
+    # Development Related
     zsh
     fish
     git
-    eza
-    hyprland
     gnupg
     openssh
-  ];
 
-  services.openssh.enable = true;
+    pkg-config
+    gnumake
+    cmake
+    meson
+    cpio
+    ninja
+    cairo
+    pango
+
+    waybar
+  ];
 
   fonts.packages = with pkgs; [
     iosevka-bin
