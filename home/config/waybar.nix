@@ -60,19 +60,19 @@ window#waybar {
 }
 
 .modules-left {
-    margin: 10px 0 0 5px;
+    margin: 10px 0 0 10px;
     background-color: #333C43;
 }
 
 .modules-center {
     background-color: #333C43;
-    margin: 0 0 0 5px;
+    margin: 0 0 0 10px;
     padding: 10px 0 10px 0;
 }
 
 .modules-right {
     background-color: #333C43;
-    margin: 0 0 10px 5px;
+    margin: 0 0 10px 10px;
     padding: 10px 0 10px 0;
 }
 

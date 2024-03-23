@@ -15,17 +15,8 @@ in
 
   imports = [
     inputs.hyprland.homeManagerModules.default
-    ../../home/config/shell.nix
-    ../../home/config/hyprland.nix
-    ../../home/config/waybar.nix
+    ../../home/config
   ];
-
-  # GNU Emacs Setup
-  home.file.".config/emacs" = {
-    source = ../../home/config/emacs;
-    recursive = true;
-  };
-  programs.emacs.enable = true;
 
   # Let Home-Manager Manage Itself
   programs.home-manager.enable = true;

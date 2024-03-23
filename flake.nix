@@ -1,5 +1,5 @@
 {
-  description = "Nixos config flake";
+  description = "NixOS-Setup";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -38,6 +38,5 @@
             }
           ];
         };
-
       };
 }

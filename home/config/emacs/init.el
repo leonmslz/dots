@@ -114,6 +114,9 @@
 (setq-default create-lockfiles nil)
 (setq-default make-backup-files nil)
 
+;; Stop Emacs From Editing The Configuration File
+(setq custom-file "/dev/null")
+
 ;; Disable Ring Bell
 (setq ring-bell-function 'ignore)
 
@@ -165,6 +168,7 @@
 
 ;; Dired
 (setq dired-kill-when-opening-new-dired-buffer t)
+(setq dired-listing-switches "-al --group-directories-first")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theming / Appearance
@@ -175,7 +179,7 @@
 (use-package ef-themes
   :ensure t
   :config
-  (load-theme 'ef-cyprus t))
+  (load-theme 'ef-elea-dark t))
 
 ;; :==:> Font-Face
 
@@ -522,6 +526,9 @@
   :init
   (global-auto-complete-mode))
 
+(use-package rainbow-mode
+  :ensure t)
+
 ;; => Fuzzy Finding
 
 (use-package vertico
@@ -568,11 +575,14 @@
                       dockerfile-mode
                       haskell-mode
                       nix-mode
-                      python-mode))
+                      clojure-mode
+                      python-mode
+                      ))
 
 ;; Install All Language-Modes
 (dolist (language cef-languages)
-  `(use-package ,language :ensure t))
+  (unless (package-installed-p language)
+    (package-install language)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom Key-Binding Definitions

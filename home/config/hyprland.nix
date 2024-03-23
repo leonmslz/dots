@@ -71,51 +71,52 @@ in
         };
       };
 
-      bind =
+      keybindings =
         let
           mainMod = "SUPER";
+          workspaces = [1 2 3 4 5 6 7 8 9];
         in
-          (map (x:
-            "${mainMod}, ${(toString x)}, workspace, ${(toString x)}")
-            [1 2 3 4 5 6 7 8 9])
-          ++
-          (map (x:
-            "${mainMod} SHIFT, ${(toString x)}, movetoworkspace, ${(toString x)}")
-            [1 2 3 4 5 6 7 8 9])
-          ++
-          [
-            "${mainMod}, return, exec, alacritty"
-            "${mainMod}, B, exec, firefox"
-            "${mainMod}, C, killactive,"
-            "${mainMod}, P, exec, pcmanfm"
-            "${mainMod}, F, togglefloating,"
-            "${mainMod}, space, exec, wofi --show drun --allow-images"
-            "${mainMod}, O, exec, hyprpicker | tr -d '\\n' | wl-copy"
-            "${mainMod}, W, exec, grim -g \"$(slurp)\""
-            "${mainMod}, E, exec, emacs"
-            "${mainMod}, A, exec, amixer sset Master 5%-"
-            "${mainMod}, D, exec, amixer sset Master 5%+"
-            "${mainMod}, S, exec, amixer sset Master toggle"
-            "${mainMod}, H, movefocus, l"
-            "${mainMod}, J, movefocus, d"
-            "${mainMod}, K, movefocus, u"
-            "${mainMod}, L, movefocus, r"
-            "${mainMod} CTRL, H, movewindow, l"
-            "${mainMod} CTRL, J, movewindow, d"
-            "${mainMod} CTRL, K, movewindow, u"
-            "${mainMod} CTRL, L, movewindow, r"
-            "${mainMod}, mouse_down, workspace, e-1"
-            "${mainMod}, mouse_up, workspace, e+1"
-          ];
+          {
+            bind =
+              (map (x:
+                "${mainMod}, ${(toString x)}, workspace, ${(toString x)}")
+                workspaces)
+              ++
+              (map (x:
+                "${mainMod} SHIFT, ${(toString x)}, movetoworkspace, ${(toString x)}")
+                workspaces)
+              ++
+              [
+                "${mainMod}, return, exec, alacritty"
+                "${mainMod}, B, exec, firefox"
+                "${mainMod}, C, killactive,"
+                "${mainMod}, P, exec, pcmanfm"
+                "${mainMod}, F, togglefloating,"
+                "${mainMod}, space, exec, rofi -show drun"
+                "${mainMod}, O, exec, hyprpicker | tr -d '\\n' | wl-copy"
+                "${mainMod}, W, exec, grim -g \"$(slurp)\""
+                "${mainMod}, E, exec, emacs"
+                "${mainMod}, A, exec, amixer sset Master 5%-"
+                "${mainMod}, D, exec, amixer sset Master 5%+"
+                "${mainMod}, S, exec, amixer sset Master toggle"
+                "${mainMod}, H, movefocus, l"
+                "${mainMod}, J, movefocus, d"
+                "${mainMod}, K, movefocus, u"
+                "${mainMod}, L, movefocus, r"
+                "${mainMod} CTRL, H, movewindow, l"
+                "${mainMod} CTRL, J, movewindow, d"
+                "${mainMod} CTRL, K, movewindow, u"
+                "${mainMod} CTRL, L, movewindow, r"
+                "${mainMod}, mouse_down, workspace, e-1"
+                "${mainMod}, mouse_up, workspace, e+1"
+              ];
 
-      bindm =
-        let
-          mainMod = "SUPER";
-        in
-          [
-            "${mainMod}, mouse:272, movewindow"
-            "${mainMod}, mouse:273, resizewindow"
-          ];
+            bindm =
+              [
+                "${mainMod}, mouse:272, movewindow"
+                "${mainMod}, mouse:273, resizewindow"
+              ];
+          };
 
       exec-once = "${autostart}/bin/autostart";
     };
