@@ -3,10 +3,7 @@
 let
   hyprplugins = inputs.hyprland-plugins.packages.${pkgs.system};
 
-  autostart = pkgs.pkgs.writeShellScriptBin "autostart" ''
-      swww init
-      waybar
-  '';
+  wallpaperPath = "~/Downloads/Wallpaper.jpg";
 in
 {
   wayland.windowManager.hyprland = {
@@ -20,6 +17,7 @@ in
       input = {
         kb_layout = "de";
         kb_variant = "nodeadkeys";
+        sensitivity = 6.0;
       };
 
       general = {
@@ -37,6 +35,10 @@ in
         shadow_range = 4;
         shadow_render_power = 3;
         "col.shadow" = "rgba(1a1a1aee)";
+      };
+
+      misc = {
+        disable_hyprland_logo = true;
       };
 
       animations = {
@@ -118,7 +120,21 @@ in
               ];
           };
 
-      exec-once = "${autostart}/bin/autostart";
+      exec-once = [
+        "${pkgs.waybar}/bin/waybar &"
+        "${pkgs.hyprpaper}/bin/hyprpaper"
+      ];
     };
   };
+
+  home.packages = with pkgs; [
+    hyprpaper
+  ];
+
+  xdg.configFile."hypr/hyprpaper.conf".text = ''
+    preload = ${wallpaperPath}
+    wallpaper = ,${wallpaperPath}
+    ipc=true
+    splash=false
+  '';
 }

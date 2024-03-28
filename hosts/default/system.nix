@@ -128,6 +128,7 @@ in
     openssh
 
     pkg-config
+    gcc
     gnumake
     cmake
     meson
@@ -138,10 +139,13 @@ in
 
     waybar
 
-    libGL
-    libGLU
+    glib
 
     clojure
+
+    gnome.eog
+    gnome.nautilus
+    evince
   ];
 
   fonts.packages = with pkgs; [

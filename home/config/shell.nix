@@ -6,7 +6,7 @@
     autocd = true;
     dotDir = ".config/zsh";
     enableCompletion = true;
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
     shellAliases = {
@@ -23,6 +23,8 @@
 
     initExtra = ''
       export PROMPT="%F{cyan}( %F{yellow}  %F{green}$(basename $0) %F{red} %F{magenta}%~ %F{cyan}) %F{reset} "
+
+      pfetch
     '';
   };
 }
