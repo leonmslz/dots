@@ -15,8 +15,12 @@ in
 
   imports = [
     inputs.hyprland.homeManagerModules.default
+    inputs.nix-colors.homeManagerModules.default
+
     ../../home/config
   ];
+
+  colorScheme = inputs.nix-colors.colorSchemes.everforest;
 
   # Let Home-Manager Manage Itself
   programs.home-manager.enable = true;

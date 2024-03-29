@@ -46,62 +46,61 @@
       };
     }];
 
-    style = ''
-* {
-    border: none;
-    font-family: Font Awesome, Roboto, Arial, sans-serif;
-    font-size: 13px;
-    color: #ffffff;
-    border-radius: 5px;
-}
+    style = with config.colorScheme.palette; ''
+      * {
+          border: none;
+          font-family: Font Awesome, Roboto, Arial, sans-serif;
+          font-size: 13px;
+          color: #ffffff;
+          border-radius: 5px;
+      }
 
-window#waybar {
-    background: rgba(0, 0, 0, 0);
-}
+      window#waybar {
+          background: rgba(0, 0, 0, 0);
+      }
 
-.modules-left {
-    margin: 10px 0 0 10px;
-    background-color: #333C43;
-}
+      .modules-left {
+          margin: 10px 0 0 10px;
+          background-color: #${base00};
+      }
 
-.modules-center {
-    background-color: #333C43;
-    margin: 0 0 0 10px;
-    padding: 10px 0 10px 0;
-}
+      .modules-center {
+          background-color: #${base00};
+          margin: 0 0 0 10px;
+          padding: 10px 0 10px 0;
+      }
 
-.modules-right {
-    background-color: #333C43;
-    margin: 0 0 10px 10px;
-    padding: 10px 0 10px 0;
-}
+      .modules-right {
+          background-color: #${base00};
+          margin: 0 0 10px 10px;
+          padding: 10px 0 10px 0;
+      }
 
-#workspaces button {
-    padding: 8px 8px 8px 8px;
-    background-color: transparent;
-}
+      #workspaces button {
+          padding: 8px 8px 8px 8px;
+          background-color: transparent;
+      }
 
-#workspaces button .span {
-    color: red;
-}
+      #workspaces button .span {
+          color: red;
+      }
 
-#workspaces button:hover {
-    box-shadow: inherit;
-    background-color: rgba(0,153,153,1);
-}
+      #workspaces button:hover {
+          background-color: #${base0D};
+      }
 
-#workspaces button.active {
-    background-color: #52796f;
-}
+      #workspaces button.active {
+          background-color: #${base0B};
+      }
 
-#custom-power {
-    margin: 5px 0 0 4px;
-    color: #e69578;
-}
+      #custom-power {
+          margin: 5px 0 0 4px;
+          color: #${base0E};
+      }
 
-#pulseaudio.muted {
-    color: #e67e80;
-}
+      #pulseaudio.muted {
+          color: #${base0E};
+      }
     '';
   };
 }

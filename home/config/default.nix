@@ -5,5 +5,6 @@
     ./hyprland.nix
     ./shell.nix
     ./waybar.nix
+    ./rofi.nix
   ];
 }

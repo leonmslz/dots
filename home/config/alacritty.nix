@@ -6,30 +6,30 @@
 
     settings = {
 
-      colors = {
+      colors = with config.colorScheme.palette; {
         primary = {
-          background = "#2d353b";
-          foreground = "#d3c6aa";
+          background = "#${base00}";
+          foreground = "#${base07}";
         };
         bright = {
           black    = "#475258";
-          blue     = "#7fbbb3";
-          cyan     = "#83c092";
-          green    = "#a7c080";
-          magenta  = "#d699b6";
-          red      = "#e67e80";
-          white    = "#d3c6aa";
-          yellow   = "#dbbc7f";
+          blue     = "#${base08}";
+          cyan     = "#${base0B}";
+          green    = "#${base0D}";
+          magenta  = "#${base09}";
+          red      = "#${base0E}";
+          white    = "#${base07}";
+          yellow   = "#${base0A}";
         };
         normal = {
           black    = "#475258";
-          blue     = "#7fbbb3";
-          cyan     = "#83c092";
-          green    = "#a7c080";
-          magenta  = "#d699b6";
-          red      = "#e67e80";
-          white    = "#d3c6aa";
-          yellow   = "#dbbc7f";
+          blue     = "#${base08}";
+          cyan     = "#${base0B}";
+          green    = "#${base0D}";
+          magenta  = "#${base09}";
+          red      = "#${base0E}";
+          white    = "#${base07}";
+          yellow   = "#${base0A}";
         };
         draw_bold_text_with_bright_colors = true;
       };
