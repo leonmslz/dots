@@ -13,7 +13,19 @@ in
       hyprbars
     ];
 
-    settings = {
+    settings = with config.colorScheme.palette; {
+
+      plugin = {
+        hyprbars = {
+          bar_height      = 20;
+          bar_text_size   = 8;
+          bar_text_font   = "Iosevka";
+          bar_color       = "rgba(${base07}55)";
+          "col.text"      = "rgba(${base00}FF)";
+          hyprbars-button = "rgb(${base0E}), 12, , hyprctl dispatch killactive";
+        };
+      };
+
       input = {
         kb_layout = "de";
         kb_variant = "nodeadkeys";
@@ -24,8 +36,8 @@ in
         gaps_in = 5;
         gaps_out = 10;
         border_size = 3;
-        "col.active_border" = "rgba(ffffffff)";
-        "col.inactive_border" = "rgba(000000ff)";
+        "col.active_border" = "rgba(${base07}FF)";
+        "col.inactive_border" = "rgba(${base00}FF)";
         layout = "master";
       };
 
@@ -34,7 +46,7 @@ in
         drop_shadow = true;
         shadow_range = 4;
         shadow_render_power = 3;
-        "col.shadow" = "rgba(1a1a1aee)";
+        "col.shadow" = "rgba(${base00}EE)";
       };
 
       misc = {
@@ -62,16 +74,9 @@ in
         mfact         = "0.5";
       };
 
-      plugin = {
-        hyprbars = {
-          bar_height      = 20;
-          bar_text_size   = 8;
-          bar_text_font   = "Iosevka";
-          bar_color       = "rgba(FFFFFF55)";
-          "col.text"      = "rgba(0a0908FF)";
-          hyprbars-button = "rgb(D97A7A), 12, , hyprctl dispatch killactive";
-        };
-      };
+      windowrulev2 = [
+        "float, class:.*"
+      ];
 
       keybindings =
         let

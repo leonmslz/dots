@@ -64,7 +64,7 @@
 ;; Emacs Default Frame Size
 
 (when window-system
-  (set-frame-size (selected-frame) 120 40))
+  (set-frame-size (selected-frame) 160 55))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; General Settings

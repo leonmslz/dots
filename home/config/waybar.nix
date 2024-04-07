@@ -60,8 +60,8 @@
       }
 
       .modules-left {
-          margin: 10px 0 0 10px;
           background-color: #${base00};
+          margin: 10px 0 0 10px;
       }
 
       .modules-center {
@@ -78,11 +78,6 @@
 
       #workspaces button {
           padding: 8px 8px 8px 8px;
-          background-color: transparent;
-      }
-
-      #workspaces button .span {
-          color: red;
       }
 
       #workspaces button:hover {
@@ -94,7 +89,7 @@
       }
 
       #custom-power {
-          margin: 5px 0 0 4px;
+          margin: 5px 0 0 0;
           color: #${base0E};
       }
 

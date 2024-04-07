@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.zsh = {
@@ -9,12 +9,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    shellAliases = {
-      l          = "eza -alh --icons --group-directories-first";
-      ls         = "eza -a --icons --group-directories-first";
-      tree       = "eza --tree --icons --group-directories-first";
-      nix-update = "sudo nixos-rebuild switch --flake ~/NixOS-System/.#default";
-    };
+    shellAliases = import ./aliases.nix;
 
     history = {
       size = 10000;
