@@ -1,5 +1,5 @@
 # home.nix
-{ inputs, config, pkgs, unstablePkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 let
   inherit (import ../../globals.nix)
@@ -16,10 +16,6 @@ in
 
   # User Specific Packages
   home.packages =
-    # (with unstablePkgs; [
-      # emacs # Editor
-    # ])
-    # ++
     (with pkgs; [
       emacs # Editor
       vim # Terminal Editor
@@ -31,6 +27,21 @@ in
       gnome.nautilus # File-Manager
       evince # PDF-Viewer
     ]);
+
+  # Theming
+  gtk.enable = true;
+  qt.enable = true;
+
+  gtk.iconTheme.package = pkgs.papirus-icon-theme;
+  gtk.iconTheme.name = "Papirus-Dark";
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 22;
+  };
 
   imports = [
     inputs.hyprland.homeManagerModules.default

@@ -117,6 +117,7 @@ in
     openssh
     pkg-config
     gcc
+    ghc
     gnumake
     cmake
     meson
