@@ -34,9 +34,13 @@
         draw_bold_text_with_bright_colors = true;
       };
 
-      window.padding = {
-        x = 3;
-        y = 3;
+      window = {
+        opacity = 0.75;
+        decorations = "none";
+        padding = {
+          x = 3;
+          y = 3;
+        };
       };
 
       font = {

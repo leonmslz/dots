@@ -17,7 +17,7 @@ in
   # User Specific Packages
   home.packages =
     (with pkgs; [
-      emacs # Editor
+      emacs-gtk # Editor
       vim # Terminal Editor
       alacritty # Terminal Emulator
       firefox # Browser

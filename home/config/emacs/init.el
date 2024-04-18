@@ -151,7 +151,9 @@
 (setq completion-auto-wrap t)
 
 ;; Make Background Transparent
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(let ((alpha-percentage 75))
+  (set-frame-parameter nil 'alpha-background alpha-percentage)
+  (add-to-list 'default-frame-alist '(alpha-background . alpha-percentage)))
 
 ;; When Recentering Only Recenter To The Middle Of The Screen
 (setq recenter-positions '(middle))
@@ -179,7 +181,7 @@
 (use-package ef-themes
   :ensure t
   :config
-  (load-theme 'ef-elea-dark t))
+  (load-theme 'ef-melissa-dark t))
 
 ;; :==:> Font-Face
 
