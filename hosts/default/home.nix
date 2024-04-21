@@ -26,6 +26,8 @@ in
       gnome.eog # Image-Viewer
       gnome.nautilus # File-Manager
       evince # PDF-Viewer
+
+      prismlauncher
     ]);
 
   # Theming
