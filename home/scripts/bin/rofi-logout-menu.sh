@@ -11,6 +11,5 @@ case $result in
  "Logout")
      hyprctl dispatch exit ;;
  "Suspend")
-     systemctl suspend
-     ;;
+     systemctl suspend ;;
 esac

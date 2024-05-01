@@ -1,10 +1,10 @@
-# scripts.nix - Module for creating Script-Derivations out of Shell-Scripts
-{ pkgs, ... }:
+# scripts.nix - Module For Creating Script-Derivations Out Of Shell-Scripts
+{ pkgs, scriptDir, ... }:
 
 let
 
   # --- Variables ---
-  baseDir         = ./scripts;
+  baseDir         = scriptDir;
   baseDirAbsolute = builtins.toPath baseDir;
   shellShebang    = "#!/usr/bin/env bash";
 
