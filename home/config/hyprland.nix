@@ -128,6 +128,7 @@ in
       exec-once = [
         "${pkgs.waybar}/bin/waybar &"
         "${pkgs.hyprpaper}/bin/hyprpaper"
+        "${pkgs.networkmanagerapplet}/bin/nm-applet &"
       ];
     };
   };

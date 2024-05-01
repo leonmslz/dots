@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, config, pkgs, scripts, ... }:
 
 {
   programs.waybar = {
@@ -30,6 +30,7 @@
       };
 
       "clock" = {
+        format = "{:%H:%M}";
         rotate = 270;
       };
 
@@ -43,6 +44,7 @@
 
       "custom/power" = {
         format = "";
+        on-click = "${scripts.rofi-logout-menu}/bin/rofi-logout-menu";
       };
     }];
 
@@ -61,19 +63,20 @@
 
       .modules-left {
           background-color: #${base00};
+          /* top | right | bottom | left */
           margin: 10px 0 0 10px;
       }
 
       .modules-center {
           background-color: #${base00};
+          /* top | right | bottom | left */
           margin: 0 0 0 10px;
-          padding: 10px 0 10px 0;
       }
 
       .modules-right {
           background-color: #${base00};
+          /* top | right | bottom | left */
           margin: 0 0 10px 10px;
-          padding: 10px 0 10px 0;
       }
 
       #workspaces button {
@@ -88,13 +91,32 @@
           background-color: #${base0B};
       }
 
-      #custom-power {
-          margin: 5px 0 0 0;
-          color: #${base0E};
+      #clock {
+          background-color: #${base07};
+          /* top | right | bottom | left */
+          padding: 10px 0 10px 0;
+      }
+
+      #tray {
+          background-color: #${base0D};
+          /* top | right | bottom | left */
+          padding: 10px 0 10px 0;
+      }
+
+      #pulseaudio {
+          background-color: #${base02};
+          /* top | right | bottom | left */
+          padding: 10px 0 10px 0;
       }
 
       #pulseaudio.muted {
           color: #${base0E};
+      }
+
+      #custom-power {
+          /* top | right | bottom | left */
+          padding: 10px 0 10px 0;
+          background-color: #${base0E};
       }
     '';
   };

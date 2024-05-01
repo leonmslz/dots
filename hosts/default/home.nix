@@ -1,5 +1,5 @@
 # home.nix
-{ inputs, config, pkgs, ... }:
+{ inputs, config, pkgs, scripts, ... }:
 
 let
   inherit (import ../../globals.nix)
@@ -26,17 +26,34 @@ in
       gnome.eog # Image-Viewer
       gnome.nautilus # File-Manager
       evince # PDF-Viewer
-
-      prismlauncher
+      qrencode # QR-Code Utility
+      prismlauncher # Minecraft-Launcher
+      networkmanagerapplet # Network-Manager-Applet
+      bottles # Wine-Manager
+      wine-wayland
+    ])
+    ++
+    (with scripts; [
+      rofi-logout-menu
     ]);
 
-  # Theming
-  gtk.enable = true;
+  # Qt-Theming
   qt.enable = true;
 
-  gtk.iconTheme.package = pkgs.papirus-icon-theme;
-  gtk.iconTheme.name = "Papirus-Dark";
+  # Gtk-Theming
+  gtk = {
+    enable = true;
+    theme = {
+      package = pkgs.orchis-theme;
+      name = "Orchis-Dark";
+    };
+    iconTheme = {
+      package = pkgs.papirus-icon-theme;
+      name = "Papirus-Dark";
+    };
+  };
 
+  # Cursor-Theming
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;

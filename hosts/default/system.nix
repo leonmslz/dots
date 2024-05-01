@@ -9,7 +9,7 @@
 #                                                           |___/
 # Configuration File For NixOS
 
-{ inputs, config, pkgs, unstablePkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 let
   inherit (import ../../globals.nix)
@@ -98,37 +98,34 @@ in
   services.openssh.enable = true;
 
   environment.systemPackages =
-   (with unstablePkgs; [
-   ])
-   ++
-   (with pkgs; [
-    htop
-    pfetch
-    eza
-    tree
-    ispell
-    swww
-    killall
-    wl-clipboard
-    zsh
-    fish
-    git
-    gnupg
-    openssh
-    pkg-config
-    gcc
-    ghc
-    gnumake
-    cmake
-    meson
-    cpio
-    ninja
-    cairo
-    pango
-    glib
-    clojure
-    go
-  ]);
+    (with pkgs; [
+      htop
+      pfetch
+      eza
+      tree
+      ispell
+      swww
+      killall
+      wl-clipboard
+      zsh
+      fish
+      git
+      gnupg
+      openssh
+      pkg-config
+      gcc
+      ghc
+      gnumake
+      cmake
+      meson
+      cpio
+      ninja
+      cairo
+      pango
+      glib
+      clojure
+      go
+    ]);
 
   fonts.packages = with pkgs; [
     iosevka-bin

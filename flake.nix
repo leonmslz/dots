@@ -24,22 +24,21 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      inherit (import ./globals.nix)
-        username
-      ;
+      inherit (import ./globals.nix) username;
+      inherit (import ./home/scripts/scripts.nix pkgs) scripts;
     in
       {
         nixosConfigurations = {
 
           default = nixpkgs.lib.nixosSystem {
             specialArgs = {
-              inherit inputs;
+              inherit inputs scripts;
             };
             modules = [
               ./hosts/default/system.nix
               inputs.home-manager.nixosModules.home-manager {
                 home-manager.extraSpecialArgs = {
-                  inherit inputs;
+                  inherit inputs scripts;
                 };
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
