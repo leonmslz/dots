@@ -11,7 +11,10 @@ let
   # --- Helper Functions ---
   # Dropping File-Extension (e.g. "test.sh" -> "test")
   dropShellExtension = fileName:
-    builtins.head (builtins.split ".sh" fileName);
+    if (builtins.match ".*\.sh" fileName) != null then
+      builtins.head (builtins.split ".sh" fileName)
+    else
+      fileName;
 
   # Creating Derivation Out Of A Shell Script
   createScriptDerivation = script:

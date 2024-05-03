@@ -20,24 +20,22 @@
       pkgs = nixpkgs.legacyPackages.${system};
 
       inherit (import ./globals.nix) username;
-      inherit (import ./lib/scripts.nix { pkgs = (pkgs); scriptDir = (./home/scripts/bin); }) scripts;
+
+      myLib = import ./lib;
+      inherit (myLib { inherit pkgs; scriptDir = (./home/scripts/bin); }) scripts;
+      inherit (myLib { inherit inputs; }) mkSystem;
     in
       {
         # --- Systems ---
         nixosConfigurations = {
 
-          default = # Desktop Computer
-            nixpkgs.lib.nixosSystem {
-              specialArgs = { inherit inputs scripts; };
-              modules = [
-                ./hosts/default/system.nix
-                inputs.home-manager.nixosModules.home-manager {
-                  home-manager.extraSpecialArgs = { inherit inputs scripts; };
-                  home-manager.useGlobalPkgs = true;
-                  home-manager.useUserPackages = true;
-                  home-manager.users."${username}" = import ./hosts/default/home.nix;
-                }
-              ];
+          # Desktop Computer
+          default =
+            mkSystem {
+              username     = username;
+              special-args = { inherit inputs scripts; };
+              home-nix     = (./hosts/default/home.nix);
+              system-nix   = (./hosts/default/system.nix);
             };
 
         };

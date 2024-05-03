@@ -34,6 +34,7 @@ in
     ])
     ++
     (with scripts; [
+      hic
       rofi-logout-menu
     ]);
 
