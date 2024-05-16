@@ -75,8 +75,15 @@ in
       };
 
       windowrulev2 = [
+        # Make All Windows Floating By Default
         "float, class:.*"
+
+        # Except ...
+        "maximize, class:^(firefox)$"
       ];
+
+      # Issue due to Hyprland (v0.40.0) and Nvidia-Drivers
+      monitor = [ "Unknown-1,disable" ];
 
       keybindings =
         let

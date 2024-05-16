@@ -17,7 +17,7 @@ in
   # User Specific Packages
   home.packages =
     (with pkgs; [
-      emacs-gtk # Editor
+      emacs29-pgtk # Editor
       vim # Terminal Editor
       alacritty # Terminal Emulator
       firefox # Browser
@@ -31,6 +31,8 @@ in
       networkmanagerapplet # Network-Manager-Applet
       bottles # Wine-Manager
       wine-wayland
+      fastfetch # Fetching Tool
+      hyprpicker # Color-Picker Tool
     ])
     ++
     (with scripts; [
