@@ -1,15 +1,13 @@
-;; :==:> Mode-Line
+;; -*- lexical-binding: t -*-
+;; mode-line.el - Custom Mode-Line Configuration
+
 (defgroup cef-mode-line nil
   "Custom Minimalistic Mode-Line."
   :group 'cef-emacs-configuration)
 
 ;; Height Of Mode-Line
-
-(defun cef-mline-fun/set-mline-height (h r)
-  (propertize " " 'display `((height ,h) (raise ,r))))
-
 (defvar-local cef-mline-module/beginning
-    '(:eval (cef-mline-fun/set-mline-height 1.5 -0.15))
+    '(:eval (propertize " " 'display '((height 1.5) (raise -0.15))))
   "Mode-Line Module Which Puts A Small Icon Depending On A State On The Mode-Line.")
 (put 'cef-mline-module/beginning 'risky-local-variable t)
 
@@ -19,7 +17,6 @@
   "Faces for my custom modeline."
   :group 'cef-emacs-configuration)
 
-;; Faces
 ;; Code Block Format Stolen From: <https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-modeline.el>
 (defface cef-mline-face/green-background-active
   '((default :inherit bold)
@@ -81,25 +78,52 @@
   "Mode-Line Face For `cef-mline-module/buffer-name'."
   :group 'cef-modeline-faces)
 
-(defface cef-mline-face/line-number
-  '((t :foreground "grey"))
-  "Mode-Line Face For `cef-mline-module/line-number'."
+(defface cef-mline-face/orange-indicator
+  '((default)
+    (((class color) (min-colors 88) (background light))
+     :foreground "orange")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#EBA8A8")
+    (t :foreground "orange"))
+  "Mode-Line Face For `cef-mline-module/buffer-name'."
   :group 'cef-modeline-faces)
 
-(defface cef-mline-face/dired-pwd
-  '((t :foreground "grey"))
-  "Mode-Line Face For `cef-mline-module/dired-pwd'."
+(defface cef-mline-face/cyan-indicator
+  '((default)
+    (((class color) (min-colors 88) (background light))
+     :foreground "cyan")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#99BFCF")
+    (t :foreground "cyan"))
+  "Mode-Line Face For `cef-mline-module/buffer-name'."
   :group 'cef-modeline-faces)
 
-(defface cef-mline-face/shell
-  '((t :foreground "grey"))
-  "Mode-Line Face For `cef-mline-module/shell'."
+(defface cef-mline-face/yellow-indicator
+  '((default)
+    (((class color) (min-colors 88) (background light))
+     :foreground "yellow")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#FFE36C")
+    (t :foreground "yellow"))
+  "Mode-Line Face For `cef-mline-module/buffer-name'."
+  :group 'cef-modeline-faces)
+
+(defface cef-mline-face/green-indicator
+  '((default)
+    (((class color) (min-colors 88) (background light))
+     :foreground "green")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#50CF89")
+    (t :foreground "green"))
+  "Mode-Line Face For `cef-mline-module/buffer-name'."
   :group 'cef-modeline-faces)
 
 (defface cef-mline-face/help-command
   '((t :foreground "grey"))
   "Mode-Line Face For `cef-mline-module/help-command'."
   :group 'cef-modeline-faces)
+
+;; --- Modules ---
 
 ;; Module: Emoji-Icon
 
@@ -154,8 +178,6 @@
   "Mode-Line Module Which Displays The Current Buffer Name.")
 (put 'cef-mline-module/major-mode 'risky-local-variable t)
 
-;; ---
-
 ;; Module: Line-Number
 
 (defun cef-mline-fun/count-lines-of-code ()
@@ -175,8 +197,12 @@
   (let ((cline "%l")
         (tline (number-to-string (count-lines (point-min) (point-max))))
         (loc   (number-to-string (cef-mline-fun/count-lines-of-code))))
-    (propertize (format "[ %s/%s (%s loc)]" cline tline loc)
-                'face 'cef-mline-face/line-number)))
+    (format " %s %s/%s (%s)"
+            (propertize ""  'face 'cef-mline-face/cyan-indicator)
+            cline
+            tline
+            loc
+            )))
 
 (defvar-local cef-mline-module/line-number
     '(:eval (when (and (not (eq display-line-numbers nil))
@@ -187,12 +213,37 @@
 
 ;; Module: Dired-Pwd
 
+(defun cef-shorten-path (path max-len)
+  "Shorten PATH to a maximum length of MAX-LEN by removing middle elements."
+  (let* ((cur-len   (length path))
+         (elems     (split-string path "/"))
+         (elem-cons (mapcar (lambda (x) (cons x (length x))) elems)))
+    (if (<= cur-len max-len)
+        path
+      (while-let ((_ (> cur-len max-len)) ;; Main-Condition
+                  ;; Additional Variables
+                  (len-el-w-l (length elem-cons))
+                  (mid-val    (if (= len-el-w-l 1) 0 (1- (/ len-el-w-l 2))))
+                  (cdr-sum    0))
+        ;; Remove Middle-Element From List
+        (setq elem-cons (append (seq-take elem-cons mid-val) (seq-drop elem-cons (1+ mid-val))))
+        ;; Add Up Length Of All Remaining Path-Parts + Slashes
+        (setq cur-len   (+ (dolist (cell elem-cons cdr-sum) (setq cdr-sum (+ cdr-sum (cdr cell))))
+                           (1- len-el-w-l) 3))
+        (setq out mid-val)) ;; Export Mid-Value
+      ;; Collect All Elements As A Path-String
+      (let* ((mid-val out)
+             (el      (mapcar #'car elem-cons)))
+        (mapconcat 'identity (append (seq-take el mid-val) (list "...") (seq-drop el mid-val)) "/")))))
+
 (defun cef-mline-fun/dired-pwd ()
-  ""
+  "Display PWD of Current Dired Buffer."
   (let* ((pwd  (expand-file-name default-directory))
          (path (replace-regexp-in-string (getenv "HOME") "~" pwd)))
-    (propertize (format "[ %s]" path)
-                'face 'cef-mline-face/dired-pwd)))
+    (format " %s %s"
+            (propertize "" 'face 'cef-mline-face/yellow-indicator)
+            (cef-shorten-path path 32)
+            )))
 
 (defvar-local cef-mline-module/dired-pwd
     '(:eval (when (and (eq major-mode 'dired-mode)
@@ -208,8 +259,10 @@
   (let* ((path  (getenv "SHELL"))
          (shell (file-name-nondirectory (directory-file-name path)))
          (fmt   (upcase-initials shell)))
-    (propertize (format "[ %s]" fmt)
-                'face 'cef-mline-face/shell)))
+    (format " %s %s"
+            (propertize "" 'face 'cef-mline-face/green-indicator)
+            fmt
+            )))
 
 (defvar-local cef-mline-module/shell
     '(:eval (when (and (eq major-mode 'term-mode)
@@ -227,7 +280,7 @@
                    (if (re-search-forward "\\S-" nil t)
                        (buffer-substring-no-properties (match-beginning 0) (progn (skip-syntax-forward "^ ") (point)))
                      ""))))
-    (propertize (format "[ %s]" command)
+    (propertize (format "{ %s}" command)
                 'face 'cef-mline-face/help-command)))
 
 (defvar-local cef-mline-module/help-command
@@ -239,18 +292,27 @@
 
 ;; Module: Git-Branch
 
-(defun cef-mline-fun/git-branch ()
-  "Get the current Git branch."
-  (let ((branch (replace-regexp-in-string "[[:space:]]+" "" (substring-no-properties vc-mode))))
-    (propertize (format "[ %s]" branch)
-                'face 'cef-mline-face/line-number)))
+(defun get-git-branch ()
+  "Get the current Git-Branch."
+  (unless (featurep 'vc-git)
+    (require 'vc-git))
+  (vc-git--symbolic-ref (expand-file-name default-directory)))
+
+(defun cef-mline-fun/git-branch (branch)
+  "Display The Current Git-Branch."
+  (format " %s %s "
+          (propertize "" 'face 'cef-mline-face/orange-indicator)
+          branch))
 
 (defvar-local cef-mline-module/git-branch
-    '(:eval (when (and (bound-and-true-p vc-mode)
-                       (mode-line-window-selected-p))
-              (cef-mline-fun/git-branch)))
-  "Mode-Line Module Which Displays The Current Buffer Name.")
+    '(:eval (when-let ((_ (mode-line-window-selected-p))
+                       (_ (or (bound-and-true-p vc-mode) (eq major-mode 'dired-mode)))
+                       (branch (get-git-branch)))
+              (cef-mline-fun/git-branch branch)))
+"Mode-Line Module Which Displays The Current Buffer Name.")
 (put 'cef-mline-module/git-branch 'risky-local-variable t)
+
+;; --- Mode-Line-Construction ---
 
 ;; Mode-Line Renderer
 ;; Source: <https://emacs.stackexchange.com/questions/5529/how-to-right-align-some-items-in-the-modeline>
@@ -281,9 +343,9 @@
                   ))
           ;; Right Modules
           (quote ("%e"
+                  cef-mline-module/git-branch
                   cef-mline-module/dired-pwd
                   cef-mline-module/shell
-                  cef-mline-module/git-branch
                   cef-mline-module/help-command
                   cef-mline-module/line-number
                   ))
@@ -291,4 +353,5 @@
 
 (setq-default mode-line-format mode-line-format)
 
+;; --- Export ---
 (provide 'mode-line)
