@@ -5,11 +5,12 @@
 (add-to-list 'load-path
              (expand-file-name "modules/" user-emacs-directory))
 
+;; Import Modules
 (require 'package-management)
 (require 'basics)
 (require 'appearance)
 (require 'mode-line)
-(require 'buffer-window-management)
+(require 'buffer-management)
 (require 'miscellaneous)
 (require 'interface)
 (require 'languages)

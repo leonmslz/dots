@@ -1,20 +1,25 @@
 ;; -*- lexical-binding: t -*-
 ;; interface.el
 
-;; => All the Icons
-
-(use-package all-the-icons-dired
-  :ensure t)
-
-;; => Auto Complete
+;; --- Packages ---
 
 (use-package auto-complete
   :ensure t
   :init
   (global-auto-complete-mode))
 
+(use-package all-the-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . all-the-icons-dired-mode))
+
 (use-package rainbow-mode
   :ensure t)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook
+  (emacs-lisp-mode . rainbow-delimiters-mode))
 
 ;; => Fuzzy Finding
 

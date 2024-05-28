@@ -1,6 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; miscellaneous.el - Additional Custom Functions
 
+;; --- Custom Functions ---
+
 ;; => Open A Terminal
 
 ;; Automaticly Kill Buffer When Exiting The Shell
@@ -12,12 +14,9 @@
 (defun cef-open-terminal ()
   "Open A Terminal Buffer Using The Default User Shell."
   (interactive)
-  (term (getenv "SHELL"))
-  ;; Rename Terminal Buffer So That The User Can Open Multiple Term-Buffers
-  (rename-buffer (format "%s %s" (buffer-name) (format-time-string "%s")) t))
+  (term (getenv "SHELL")))
 
 ;; => Open URL
-
 (defun cef-browse-url-at-line ()
   "Extract A URL From The Current Line And Open It In The Default Web Browser."
   (interactive)
@@ -32,7 +31,6 @@
       (error "Unable To Extract URL From Current Line."))))
 
 ;; => Inserting Current Date
-
 (defun cef-insert-todays-date ()
   "Insert The Current Date At Cursor Position."
   (interactive)
@@ -80,20 +78,6 @@
   (scroll-down-command)
   (recenter-top-bottom))
 
-;; => Jump By Paragraph
-
-(defun cef-jump-paragraph-up ()
-  "Jump By Paragraph Upwards."
-  (interactive)
-  (backward-paragraph))
-  ;; (recenter-top-bottom))
-
-(defun cef-jump-paragraph-down ()
-  "Jump By Paragraph Downwards."
-  (interactive)
-  (forward-paragraph))
-  ;; (recenter-top-bottom))
-
 ;; => Auto-create Missing Directories
 ;; Reference: <https://emacsredux.com/blog/2022/06/12/auto-create-missing-directories/>
 (defun cef-auto-create-missing-dirs-find-file ()
@@ -104,7 +88,6 @@
 (add-to-list 'find-file-not-found-functions #'cef-auto-create-missing-dirs-find-file)
 
 ;; => Delete Text
-
 (defun cef-delete-text ()
   "Delete Text Into Kill Ring If Selected, Otherwise Delete Character."
   (interactive)

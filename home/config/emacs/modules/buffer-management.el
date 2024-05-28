@@ -1,11 +1,63 @@
 ;; -*- lexical-binding: t -*-
-;; buffer-window-management.el - Buffer/Window Related Settings And Functions
+;; buffer-management.el - Buffer/Window Related Settings And Functions
+
+;; --- Settings ---
 
 ;; Balanced Windows <https://zck.org/balance-emacs-windows>
 (setq window-combination-resize t)
 
 ;; Enable Winner-Mode
 (winner-mode t)
+
+;; Affect User-Switched Buffers By Display Buffer Actions Set In 'display-buffer-alist'
+;; Info: <https://www.masteringemacs.org/article/demystifying-emacs-window-manager>
+(setq switch-to-buffer-obey-display-actions t)
+
+;; => Buffer Alist
+(setq display-buffer-alist
+      '(
+
+        ;; Schema
+        ;; (CONDITION
+        ;; LIST-OF-ACTIONS
+        ;; ADDITIONAL-PARAMETERS)
+
+        ;; Terminal Buffer
+        ("\\*terminal\\*" ;; Matcher
+         ;; Display Functions
+         (display-buffer-reuse-mode-window
+          display-buffer-at-bottom)
+         ;; Additional Parameters
+         (window-height . 0.33)
+         (dedicated . t)
+         (body-function . select-window))
+
+        ;; Display Help And Info-Buffers In Side Window
+        ("\\*Help\\*\\|\\*info\\*"
+         ;; Display Functions
+         (display-buffer-in-side-window)
+         ;; Additional Parameters
+         (side . right)
+         (slot . 0)
+         (window-width . 0.33)
+         (body-function . select-window))
+
+        ;; Completion Buffer
+        ("\\*Completions\\*"
+         ;; Display Functions
+         (display-buffer-at-bottom)
+         ;; Additional Parameters
+         (window-height . 10))
+
+        ;; Default Behavior
+        (".*"
+         ;; Display Functions
+         (display-buffer-reuse-window
+          display-buffer-same-window))
+
+        ))
+
+;; --- Custom Functions ---
 
 ;; Kill Current Buffer
 (defun cef-kill-current-buffer ()
@@ -15,7 +67,6 @@
 
 ;; => Switching User Buffers
 ;; Idea And Code Partially Stolen From <http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html>
-
 (defmacro cef-cycle-through-user-buffers (next-or-prev)
   "Macro For Cycling Through User Buffers."
   `(let (start-in-buffer
@@ -44,7 +95,6 @@
 
 ;; => Buffer Movement
 ;; Idea And Code Partially Stolen From <https://github.com/lukhas/buffer-move>
-
 (require 'windmove)
 
 (defun cef-move-window (direction)
@@ -87,7 +137,6 @@
   (cef-move-window 'right))
 
 ;; => Split Window
-
 (defun cef-split-window-on-vertical-axis ()
   "Split The Current Window On The Vertical Axis."
   (interactive)
@@ -101,4 +150,4 @@
   (other-window 1))
 
 ;; --- Export ---
-(provide 'buffer-window-management)
+(provide 'buffer-management)

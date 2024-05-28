@@ -1,6 +1,9 @@
 ;; -*- lexical-binding: t -*-
 ;; basics.el - Must Have Emacs Settings
 
+;; --- Settings ---
+
+;; Emacs Server
 (use-package server
   :ensure t
   :config
@@ -52,6 +55,9 @@
 ;; Stop Emacs From Editing The Configuration File
 (setq custom-file "/dev/null")
 
+;; Suppress Compiler Warnings
+(setq native-comp-async-report-warnings-errors 'silent)
+
 ;; Disable Ring Bell
 (setq ring-bell-function 'ignore)
 
@@ -102,24 +108,26 @@
 ;; Dired
 (setq dired-kill-when-opening-new-dired-buffer t)
 (setq dired-listing-switches "-al --group-directories-first")
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
 ;; Deactivate Settings In Certain Major-Modes
 
-(add-hook 'term-mode-hook
-          (lambda ()
-            (display-line-numbers-mode 0)
-            (setq-local scroll-margin 0)
-            (set (make-local-variable 'global-hl-line-mode) nil)))
+(defun cef-add-hook (f hooks)
+  "Add A Given Function f To Multiple Hooks."
+  (mapc (lambda (hook) (add-hook hook f))
+        hooks))
 
-(add-hook 'help-mode-hook
-          (lambda ()
-            (display-line-numbers-mode 0)))
+(cef-add-hook (lambda () (display-line-numbers-mode 0))
+              '(help-mode-hook
+                Info-mode-hook
+                term-mode-hook
+                dired-mode-hook))
 
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (display-line-numbers-mode 0)
-            (setq-local scroll-margin 0)
-            (all-the-icons-dired-mode t)))
+(cef-add-hook (lambda () (setq-local scroll-margin 0))
+              '(term-mode-hook))
+
+(cef-add-hook (lambda () (set (make-local-variable 'global-hl-line-mode) nil))
+              '(term-mode-hook))
 
 ;; --- Export ---
 (provide 'basics)

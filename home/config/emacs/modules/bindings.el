@@ -1,6 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; bindings.el - Key-Binding Definitions
 
+;; --- Packages ---
+
 ;; => Which-Key
 ;; "Emacs package that displays available keybindings in popup" <https://github.com/justbur/emacs-which-key>
 (use-package which-key
@@ -22,7 +24,7 @@
         which-key-allow-imprecise-window-fit nil
         which-key-separator " → "))
 
-;; => C-c Keybindings
+;; --- Custom Keybinding-Definitions ---
 
 ;; Window/Buffer Related Keybindings
 (defvar-keymap cef-prefix-window-and-buffer-management
@@ -114,10 +116,11 @@
   :doc    "Custom Keybindings For Term Major Mode."
   :keymap term-raw-map
   ;; Disable Term-Mode Keys That Conflict With Other Bindings.
-  "C-c w" nil)
+  "C-c" nil
+  "C-x" nil
+  "M-x" nil)
 
 ;; => First Level Global Bindings
-
 (defvar-keymap cef-global-mode
   :doc ""
   :keymap global-map
@@ -135,15 +138,14 @@
   "C-v" #'cef-scroll-down
   "M-v" #'cef-scroll-up
 
-  "C-r" #'cef-jump-paragraph-down
-  "M-r" #'cef-jump-paragraph-up
+  "C-r" #'forward-paragraph
+  "M-r" #'backward-paragraph
 
   "C-d" #'cef-delete-text
   ;; Global Font-Size Adjustments
   "C-x C-+" #'global-text-scale-adjust
   "C-x C--" #'global-text-scale-adjust
-  "C-x C-0" #'cef-apply-default-font-size
-  "C-x C-1" #'cef-apply-huge-font-size)
+  "C-x C-0" #'cef-hard-reset-font-size)
 
 ;; --- Export ---
 (provide 'bindings)
