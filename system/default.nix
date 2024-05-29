@@ -1,0 +1,6 @@
+{
+  imports = [
+    ./firmware
+    ./software-components
+  ];
+}

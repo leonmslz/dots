@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, ... }:
+{ config, ... }:
 
 {
   programs.alacritty = {

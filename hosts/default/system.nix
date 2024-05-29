@@ -20,10 +20,8 @@ in
 {
   imports = [
     ./hardware.nix
+    ./../../system
   ];
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "${hostname}";
 
@@ -47,8 +45,6 @@ in
 
   services.xserver.enable = true;
   services.libinput.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = true;
 
   services.xserver.xkb = {
     layout = "de";
@@ -97,35 +93,6 @@ in
 
   services.openssh.enable = true;
 
-  # Enable OpenGL
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-  };
-
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
-
-  hardware.nvidia = {
-    # Modesetting is required.
-    modesetting.enable = true;
-
-    # Nvidia power management.
-    powerManagement.enable = false;
-
-    # Fine-grained power management. Turns off GPU when not in use.
-    powerManagement.finegrained = false;
-
-    # Don't Use The NVidia Open Source Kernel Module
-    open = false;
-
-    # Enable the Nvidia settings menu,
-    nvidiaSettings = true;
-
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
   environment.systemPackages =
     (with pkgs; [
       htop
@@ -133,11 +100,9 @@ in
       eza
       tree
       ispell
-      swww
       killall
       wl-clipboard
       zsh
-      fish
       git
       gnupg
       openssh
@@ -152,9 +117,9 @@ in
       cairo
       pango
       glib
-      clojure
       go
       libtool
+      catppuccin-sddm-corners
     ]);
 
   fonts.packages = with pkgs; [

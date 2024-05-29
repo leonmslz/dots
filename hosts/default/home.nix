@@ -1,5 +1,5 @@
 # home.nix
-{ inputs, config, pkgs, scripts, ... }:
+{ inputs, config, pkgs, scripts, lib, ... }:
 
 let
   inherit (import ../../globals.nix)
@@ -33,6 +33,9 @@ in
       wine-wayland
       fastfetch # Fetching Tool
       hyprpicker # Color-Picker Tool
+      # processing
+      nix-prefetch-scripts # Collection of all the nix-prefetch-* scripts which may be used to obtain source hashes
+      cider # Apple Music
     ])
     ++
     (with scripts; [
@@ -62,7 +65,7 @@ in
     x11.enable = true;
     package = pkgs.bibata-cursors;
     name = "Bibata-Modern-Classic";
-    size = 22;
+    size = lib.mkForce 22;
   };
 
   imports = [

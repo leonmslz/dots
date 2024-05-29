@@ -101,14 +101,27 @@
 ;; Automaticly Kill Process Without Confirmation On Exit
 (setq confirm-kill-processes nil)
 
+;; Simply Ask For Y Or N Instead Of Yes Or No
+(fset 'yes-or-no-p 'y-or-n-p)
+
 ;; Flyspell
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
-;; Dired
+;; --- Dired ---
+
+;; Only One Dired Buffer
 (setq dired-kill-when-opening-new-dired-buffer t)
+
+;; List Directories First
 (setq dired-listing-switches "-al --group-directories-first")
+
+;; Hide Details
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+
+;; Recursive Delete And Copy
+(setq dired-recursive-copies 'always)
+(setq dired-recursive-deletes 'always)
 
 ;; Deactivate Settings In Certain Major-Modes
 

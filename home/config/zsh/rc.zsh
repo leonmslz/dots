@@ -86,9 +86,11 @@ function alias() {
 
 # Alias Ls Commands To Eza
 alias l             "eza -lah --icons --group-directories-first"   \
+      lg            "eza -lah --icons --group-directories-first --git-ignore"   \
       ll            "l"                                            \
       ls            "eza -a --icons --group-directories-first"     \
-      tree          "eza --tree --icons --group-directories-first"
+      tree          "eza --tree --icons --group-directories-first" \
+      treeg         "eza --tree --icons --group-directories-first --git-ignore"
 
 # Git Related Aliases
 alias g             "git"                                          \
@@ -214,4 +216,5 @@ plugin "zsh-users/zsh-syntax-highlighting"
 
 # Autostart ---------------------------------------------------------------------------------------
 
-is_installed pfetch && pfetch
+# is_installed pfetch && pfetch
+is_installed fastfetch && fastfetch

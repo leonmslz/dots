@@ -1,5 +1,4 @@
-{ inputs, config, pkgs, ... }:
-
+# firefox.nix - Configuration File For Firefox
 {
   programs.firefox = {
     enable = true;
@@ -30,6 +29,18 @@
             }];
             definedAliases = [ "!nix" ];
           };
+
+          "Wikipedia" = {
+            urls = [{
+              template = "https://de.wikipedia.org/w/index.php";
+              params = [
+                { name = "title"; value = "Special:Search"; }
+                { name = "search"; value = "{searchTerms}"; }
+              ];
+            }];
+            definedAliases = [ "!wiki" ];
+          };
+
         };
       };
 

@@ -10,12 +10,19 @@ in
     enable = true;
 
     plugins = with hyprplugins; [
-      hyprbars
+      hyprbars hyprexpo
     ];
 
     settings = with config.colorScheme.palette; {
 
       plugin = {
+        hyprexpo = {
+          columns = 3;
+          gap_size = 5;
+          bg_col = "rgb(111111)";
+          workspace_method = "first 1";
+        };
+
         hyprbars = {
           bar_height      = 20;
           bar_text_size   = 8;
@@ -123,6 +130,8 @@ in
                 "${mainMod} CTRL, L, movewindow, r"
                 "${mainMod}, mouse_down, workspace, e-1"
                 "${mainMod}, mouse_up, workspace, e+1"
+                # Hyprexpo
+                "${mainMod}, p, hyprexpo:expo, toggle"
               ];
 
             bindm =
