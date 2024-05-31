@@ -1,0 +1,79 @@
+* {
+    border: none;
+    font-family: Font Awesome, Roboto, Arial, sans-serif;
+    font-size: 13px;
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+window#waybar {
+    background: rgba(0, 0, 0, 0);
+}
+
+.modules-left {
+    /* top | right | bottom | left */
+    margin: 10px 0 0 10px;
+}
+
+.modules-center {
+    /* top | right | bottom | left */
+    margin: 0 0 0 10px;
+}
+
+.modules-right {
+    /* top | right | bottom | left */
+    margin: 0 0 10px 10px;
+}
+
+#custom-nix-icon {
+    font-size: 1.5rem;
+    background-color: #88C0D0;
+    padding: 8px 8px 8px 4px;
+    margin: 0 0 10px 0px;
+}
+
+#workspaces {
+    background-color: #2E3440;
+}
+
+#workspaces button {
+    padding: 8px 8px 8px 8px;
+}
+
+#workspaces button:hover {
+    background-color: #81A1C1;
+}
+
+#workspaces button.active {
+    background-color: #A3BE8C;
+}
+
+#clock {
+    background-color: #8FBCBB;
+    /* top | right | bottom | left */
+    padding: 10px 0 10px 0;
+}
+
+#tray {
+    background-color: #5E81AC;
+    /* top | right | bottom | left */
+    padding: 10px 0 10px 0;
+    margin: 0 0 10px 0px;
+}
+
+#pulseaudio {
+    background-color: #2E3440;
+    /* top | right | bottom | left */
+    padding: 10px 0 10px 0;
+    margin: 0 0 10px 0px;
+}
+
+#pulseaudio.muted {
+    background-color: #B48EAD;
+}
+
+#custom-power {
+    /* top | right | bottom | left */
+    padding: 10px 0 10px 0;
+    background-color: #B48EAD;
+}

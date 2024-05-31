@@ -3,14 +3,23 @@
 
 let
   inherit (import ../../globals.nix)
-    username
+    # username
     homeDir
     flakeDir
   ;
 in
 {
+  imports = [
+    ./options.nix
+
+    inputs.hyprland.homeManagerModules.default
+    inputs.nix-colors.homeManagerModules.default
+
+    ../../home/config
+  ];
+
   # Basic Home-Manager Settings
-  home.username = "${username}";
+  home.username = "${config.custom.username}";
   home.homeDirectory = "${homeDir}";
   home.stateVersion = "23.05";
 
@@ -67,13 +76,6 @@ in
     name = "Bibata-Modern-Classic";
     size = lib.mkForce 22;
   };
-
-  imports = [
-    inputs.hyprland.homeManagerModules.default
-    inputs.nix-colors.homeManagerModules.default
-
-    ../../home/config
-  ];
 
   colorScheme = inputs.nix-colors.colorSchemes.nord;
 

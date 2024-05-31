@@ -2,10 +2,10 @@
   imports = [
     ./emacs
     ./zsh
-    ./alacritty.nix
-    ./hyprland.nix
-    ./waybar.nix
-    ./rofi.nix
-    ./firefox.nix
+    ./alacritty/alacritty.nix
+    ./hyprland/hyprland.nix
+    ./waybar/waybar.nix
+    ./rofi/rofi.nix
+    ./firefox/firefox.nix
   ];
 }

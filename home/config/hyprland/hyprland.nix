@@ -8,6 +8,8 @@ in
 {
   wayland.windowManager.hyprland = {
     enable = true;
+    xwayland.enable = true;
+    systemd.enable = true;
 
     plugins = with hyprplugins; [
       hyprbars hyprexpo
@@ -74,6 +76,7 @@ in
           "workspaces,1,4,default,slidevert"
           "specialWorkspace,1,6,easeOutBack,slide"
         ];
+        first_launch_animation = true;
       };
 
       master = {

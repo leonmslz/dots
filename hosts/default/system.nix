@@ -13,17 +13,18 @@
 
 let
   inherit (import ../../globals.nix)
-    username
+    # username
     hostname
   ;
 in
 {
   imports = [
+    ./options.nix
     ./hardware.nix
     ./../../system
   ];
 
-  networking.hostName = "${hostname}";
+  networking.hostName = "${config.custom.hostname}";
 
   networking.networkmanager.enable = true;
 
@@ -71,9 +72,9 @@ in
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  users.users."${username}" = {
+  users.users."${config.custom.username}" = {
     isNormalUser = true;
-    description = "leon";
+    description = "";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
     ];
@@ -120,6 +121,8 @@ in
       go
       libtool
       catppuccin-sddm-corners
+      bibata-cursors
+      lxappearance
     ]);
 
   fonts.packages = with pkgs; [

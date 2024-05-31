@@ -17,7 +17,7 @@
     modesetting.enable = true;
 
     powerManagement = {
-      enable = false;
+      enable = true;
       finegrained = false;
     };
 
@@ -29,9 +29,14 @@
     package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
 
+  boot.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+
   environment.sessionVariables = {
     # Force Wayland On Electron Apps
     NIXOS_OZONE_WL = "1";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
     # Required To Run The Correct Gbm Backend For Nvidia GpUs On Wayland
     GBM_BACKEND = "nvidia-drm";
     # Apparently, Without This Nouveau May Attempt To Be Used Instead
