@@ -1,13 +1,6 @@
-# home.nix
+# home.nix - Home-Manger Configuration File
 { inputs, config, pkgs, scripts, lib, ... }:
 
-let
-  inherit (import ../../globals.nix)
-    # username
-    homeDir
-    flakeDir
-  ;
-in
 {
   imports = [
     ./options.nix
@@ -20,7 +13,7 @@ in
 
   # Basic Home-Manager Settings
   home.username = "${config.custom.username}";
-  home.homeDirectory = "${homeDir}";
+  home.homeDirectory = "/home/${config.custom.username}";
   home.stateVersion = "23.05";
 
   # User Specific Packages
@@ -77,7 +70,7 @@ in
     size = lib.mkForce 22;
   };
 
-  colorScheme = inputs.nix-colors.colorSchemes.nord;
+  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-dark-medium;
 
   # Let Home-Manager Manage Itself
   programs.home-manager.enable = true;

@@ -2,7 +2,6 @@
 {
   description = "NixOS-Setup";
 
-
   # --- Inputs ---
   inputs = {
     nixpkgs.url                              = "github:nixos/nixpkgs/nixos-unstable";
@@ -21,7 +20,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      inherit (import ./globals.nix) username;
+      username = "leon";
 
       myLib = import ./lib;
       inherit (myLib { inherit pkgs; scriptDir = (./home/scripts/bin); }) scripts;

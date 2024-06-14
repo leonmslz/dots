@@ -1,3 +1,4 @@
+# options.nix - Declaration Of Global Options
 { lib, ... }:
 
 {
