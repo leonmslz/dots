@@ -1,4 +1,4 @@
-# firefox.nix - Configuration File For Firefox
+# firefox.nix - Nix Declarative Configuration File For Firefox Web Browser
 {
   programs.firefox = {
     enable = true;

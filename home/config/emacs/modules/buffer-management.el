@@ -49,6 +49,11 @@
          ;; Additional Parameters
          (window-height . 10))
 
+        ;; Don't Display Message-Buffer
+        ("\\*Messages\\*"
+         ;; Display Functions
+         (display-buffer-no-window))
+
         ;; Default Behavior
         (".*"
          ;; Display Functions

@@ -1,3 +1,4 @@
+# rofi.nix - Nix Declarative Configuration File For Rofi Run Launcher
 { inputs, config, pkgs, ... }:
 
 let
@@ -10,10 +11,10 @@ let
 
       b-color        = mkLiteral "#${base00}FF";
       wbg-color      = mkLiteral "#${base00}DD";
-      fg-color       = mkLiteral "#${base05}FF";
+      fg-color       = mkLiteral "#${base07}FF";
       fgp-color      = mkLiteral "#${base04}FF";
-      hl-color       = mkLiteral "#${base0B}FF";
-      w-border-color = mkLiteral "#${base07}FF";
+      hl-color       = mkLiteral "#${base0D}FF";
+      w-border-color = mkLiteral "#${base05}FF";
 
       g-spacing      = mkLiteral "10px";
       g-margin       = mkLiteral "0";

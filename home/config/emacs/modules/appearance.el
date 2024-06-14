@@ -2,10 +2,10 @@
 ;; appearance.el - Theming And Appearance
 
 ;; Color-Scheme
-(use-package ef-themes
+(use-package gruvbox-theme
   :ensure t
   :config
-  (load-theme 'ef-elea-dark t))
+  (load-theme 'gruvbox-dark-medium t))
 
 ;; => Font-Face
 

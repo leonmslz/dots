@@ -1,9 +1,10 @@
+# hyprland.nix - Nix Declarative Configuration File For Hyprland Wayland Compositor
 { inputs, config, pkgs, ... }:
 
 let
   hyprplugins = inputs.hyprland-plugins.packages.${pkgs.system};
 
-  wallpaperPath = "~/Downloads/Wallpaper.jpg";
+  wallpaperPath = "~/Downloads/Wallpaper.png";
 in
 {
   wayland.windowManager.hyprland = {
@@ -45,8 +46,8 @@ in
         gaps_in = 5;
         gaps_out = 10;
         border_size = 3;
-        "col.active_border" = "rgba(${base07}FF)";
-        "col.inactive_border" = "rgba(${base00}FF)";
+        "col.active_border" = "rgba(${base05}FF)";
+        "col.inactive_border" = "rgba(${base03}FF)";
         layout = "master";
       };
 
@@ -90,6 +91,7 @@ in
 
         # Except ...
         "maximize, class:^(firefox)$"
+        "maximize, class:^(cider)$"
       ];
 
       # Issue due to Hyprland (v0.40.0) and Nvidia-Drivers
@@ -118,6 +120,7 @@ in
                 "${mainMod}, F, togglefloating,"
                 "${mainMod}, space, exec, rofi -show drun"
                 "${mainMod}, O, exec, hyprpicker | tr -d '\\n' | wl-copy"
+                "${mainMod}, G, exec, slurp | grim -g - $HOME/screenshot.png"
                 "${mainMod}, W, exec, grim -g \"$(slurp)\""
                 "${mainMod}, E, exec, emacs"
                 "${mainMod}, A, exec, amixer sset Master 5%-"
@@ -148,6 +151,7 @@ in
         "${pkgs.waybar}/bin/waybar &"
         "${pkgs.hyprpaper}/bin/hyprpaper"
         "${pkgs.networkmanagerapplet}/bin/nm-applet &"
+        "${pkgs.blueman}/bin/blueman-applet &"
       ];
     };
   };

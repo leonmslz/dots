@@ -1,3 +1,4 @@
+# waybar.nix - Nix Declarative Configuration File For Waybar Status-Bar
 { inputs, config, pkgs, scripts, ... }:
 
 {
@@ -8,9 +9,18 @@
       layer = "top";
       position = "left";
 
-      modules-left = ["custom/nix-icon" "hyprland/workspaces"];
-      modules-center = ["clock"];
-      modules-right = ["tray" "pulseaudio" "custom/power"];
+      modules-left = [
+        "custom/nix-icon"
+        "hyprland/workspaces"
+      ];
+
+      modules-right = [
+        "tray"
+        "pulseaudio/slider"
+        "clock#time"
+        "clock#date"
+        "custom/power"
+      ];
 
       "custom/nix-icon" = {
         format = "󱄅";
@@ -36,16 +46,18 @@
         spacing = 10;
       };
 
-      "clock" = {
-        format = "{:%H\n%M\n\n%d\n%m\n%y}";
+      "clock#time" = {
+        format = "{:%H\n%M}";
       };
 
-      "pulseaudio" = {
-        format = "{volume}% {icon}";
-        format-icons = {
-          default = ["" "" ""];
-        };
-        rotate = 270;
+      "clock#date" = {
+        format = "{:%d\n%m\n%y}";
+      };
+
+      "pulseaudio/slider" = {
+        min = 0;
+        max = 100;
+        orientation = "vertical";
       };
 
       "custom/power" = {
@@ -54,6 +66,17 @@
       };
     }];
 
-    style = ./style.css;
+    style = with config.colorScheme.palette; ''
+      @define-color background #${base00};
+      @define-color foreground #${base06};
+      @define-color border     #${base03};
+      @define-color hover      #${base02};
+      @define-color selected   #${base0B};
+      @define-color slider     #${base0A};
+      @define-color highlight  #${base0D};
+      @define-color logout     #${base0E};
+
+      @import "${./style.css}";
+    '';
   };
 }

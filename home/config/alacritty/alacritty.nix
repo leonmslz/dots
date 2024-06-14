@@ -1,3 +1,4 @@
+# alacritty.nix - Nix Declarative Configuration File For Alacritty Terminal Emulator
 { config, ... }:
 
 {
@@ -12,22 +13,22 @@
           foreground = "#${base07}";
         };
         bright = {
-          black    = "#475258";
-          blue     = "#${base08}";
-          cyan     = "#${base0B}";
-          green    = "#${base0D}";
-          magenta  = "#${base09}";
-          red      = "#${base0E}";
+          black    = "#${base02}";
+          blue     = "#${base0D}";
+          cyan     = "#${base0C}";
+          green    = "#${base0B}";
+          magenta  = "#${base0E}";
+          red      = "#${base08}";
           white    = "#${base07}";
           yellow   = "#${base0A}";
         };
         normal = {
-          black    = "#475258";
-          blue     = "#${base08}";
-          cyan     = "#${base0B}";
-          green    = "#${base0D}";
-          magenta  = "#${base09}";
-          red      = "#${base0E}";
+          black    = "#${base02}";
+          blue     = "#${base0D}";
+          cyan     = "#${base0C}";
+          green    = "#${base0B}";
+          magenta  = "#${base0E}";
+          red      = "#${base08}";
           white    = "#${base07}";
           yellow   = "#${base0A}";
         };

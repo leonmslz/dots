@@ -1,3 +1,4 @@
+# default.nix (home/config) - Include Configuration Files
 {
   imports = [
     ./emacs
