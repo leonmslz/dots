@@ -1,48 +1,12 @@
-# system.nix
-#  _   _ _       ____   _____        _____             __ _
-# | \ | (_)     / __ \ / ____|      / ____|           / _(_)
-# |  \| |___  _| |  | | (___ ______| |     ___  _ __ | |_ _  __ _
-# | . ` | \ \/ / |  | |\___ \______| |    / _ \| '_ \|  _| |/ _` |
-# | |\  | |>  <| |__| |____) |     | |___| (_) | | | | | | | (_| |
-# |_| \_|_/_/\_\\____/|_____/       \_____\___/|_| |_|_| |_|\__, |
-#                                                            __/ |
-#                                                           |___/
-# Configuration File For NixOS
-
+# system.nix - Base Configuration File For NixOS-System
 { inputs, config, pkgs, ... }:
 
-let
-  inherit (import ../../globals.nix)
-    # username
-    hostname
-  ;
-in
 {
   imports = [
     ./options.nix
     ./hardware.nix
     ./../../system
   ];
-
-  networking.hostName = "${config.custom.hostname}";
-
-  networking.networkmanager.enable = true;
-
-  time.timeZone = "Europe/Berlin";
-
-  i18n.defaultLocale = "de_DE.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS        = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT    = "de_DE.UTF-8";
-    LC_MONETARY       = "de_DE.UTF-8";
-    LC_NAME           = "de_DE.UTF-8";
-    LC_NUMERIC        = "de_DE.UTF-8";
-    LC_PAPER          = "de_DE.UTF-8";
-    LC_TELEPHONE      = "de_DE.UTF-8";
-    LC_TIME           = "de_DE.UTF-8";
-  };
 
   services.xserver.enable = true;
   services.libinput.enable = true;
@@ -54,21 +18,8 @@ in
 
   console.keyMap = "de";
 
-  services.printing.enable = true;
-
   xdg.portal.enable = true;
   xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -120,9 +71,13 @@ in
       glib
       go
       libtool
+      sbcl
       catppuccin-sddm-corners
       bibata-cursors
       lxappearance
+
+      slurp
+      grim
     ]);
 
   fonts.packages = with pkgs; [

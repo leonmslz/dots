@@ -1,3 +1,4 @@
+# grub.nix - Configuration File For Grub-Bootloader
 { ... }:
 
 {

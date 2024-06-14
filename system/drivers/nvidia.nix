@@ -1,3 +1,4 @@
+# nvidia.nix - Configuration File For Nvidia Drivers
 { config, ... }:
 
 {
@@ -37,6 +38,8 @@
     # Force Wayland On Electron Apps
     NIXOS_OZONE_WL = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    # Webkit
+    WEBKIT_DISABLE_DMABUF_RENDERER = "1";
     # Required To Run The Correct Gbm Backend For Nvidia GpUs On Wayland
     GBM_BACKEND = "nvidia-drm";
     # Apparently, Without This Nouveau May Attempt To Be Used Instead

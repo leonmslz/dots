@@ -1,3 +1,4 @@
+# sddm.nix - Configuration File For Sddm Display Manager
 { pkgs, ... }:
 
 let

@@ -1,7 +1,8 @@
+# sddm-theme.nix - Theme For Sddm Display Manager
 { pkgs }:
 
 let
-  image = ./Wallpaper.jpg;
+  image = ./Wallpaper.png;
   theme = ./theme.conf;
 in
 pkgs.stdenv.mkDerivation {
@@ -18,7 +19,7 @@ pkgs.stdenv.mkDerivation {
     mkdir -p $out
     cp -R ./* $out/
 
-    cat ${image} > $out/Wallpaper.jpg
+    cat ${image} > $out/Wallpaper.png
     cat ${theme} > $out/theme.conf
   '';
 }
