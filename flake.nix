@@ -20,7 +20,10 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      username = "leon";
+      o = {
+        username = "leon";
+        hostname = "nixos";
+      };
 
       myLib = import ./lib;
       inherit (myLib { inherit pkgs; scriptDir = (./home/scripts/bin); }) scripts;
@@ -33,8 +36,8 @@
           # Desktop Computer
           default =
             mkSystem {
-              username     = username;
-              special-args = { inherit inputs scripts; };
+              username     = o.username;
+              special-args = { inherit inputs scripts o; };
               home-nix     = (./hosts/default/home.nix);
               system-nix   = (./hosts/default/system.nix);
             };

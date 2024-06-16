@@ -1,8 +1,8 @@
 # networking.nix - Configuration File For Networking Setup
-{ config, ... }:
+{ config, o, ... }:
 
 {
-  networking.hostName = "${config.custom.hostname}";
+  networking.hostName = "${o.hostname}";
 
   networking.networkmanager.enable = true;
 }

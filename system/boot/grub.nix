@@ -8,10 +8,10 @@
 
   # Enable Grub
   boot.loader.grub = {
-    enable = true;
+    enable      = true;
     useOSProber = true;
-    devices = [ "nodev" ];
-    efiSupport = true;
+    devices     = [ "nodev" ];
+    efiSupport  = true;
   };
 
 }

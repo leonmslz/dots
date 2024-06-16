@@ -1,9 +1,9 @@
 # system.nix - Base Configuration File For NixOS-System
-{ inputs, config, pkgs, ... }:
+{ inputs, config, pkgs, o, ... }:
 
 {
   imports = [
-    ./options.nix
+    # ./options.nix
     ./hardware.nix
     ./../../system
   ];
@@ -23,7 +23,7 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  users.users."${config.custom.username}" = {
+  users.users."${o.username}" = {
     isNormalUser = true;
     description = "";
     extraGroups = [ "networkmanager" "wheel" ];

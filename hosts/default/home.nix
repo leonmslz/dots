@@ -1,9 +1,9 @@
 # home.nix - Home-Manger Configuration File
-{ inputs, config, pkgs, scripts, lib, ... }:
+{ inputs, config, pkgs, scripts, lib, o, ... }:
 
 {
   imports = [
-    ./options.nix
+    # ./options.nix
 
     inputs.hyprland.homeManagerModules.default
     inputs.nix-colors.homeManagerModules.default
@@ -12,8 +12,8 @@
   ];
 
   # Basic Home-Manager Settings
-  home.username = "${config.custom.username}";
-  home.homeDirectory = "/home/${config.custom.username}";
+  home.username = "${o.username}";
+  home.homeDirectory = "/home/${o.username}";
   home.stateVersion = "23.05";
 
   # User Specific Packages
