@@ -9,7 +9,6 @@ let
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = special-args;
       modules = [
-        ./../hosts/default/options.nix
         system-nix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = special-args;
