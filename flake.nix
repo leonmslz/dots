@@ -20,9 +20,12 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      o = {
+      # -- Global Options ---
+      o = rec {
         username = "leon";
         hostname = "nixos";
+        homeDir  = "/home/${username}";
+        flakeDir = "${homeDir}/NixOS-System";
       };
 
       myLib = import ./lib;

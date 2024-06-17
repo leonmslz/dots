@@ -3,7 +3,6 @@
 
 {
   imports = [
-    # ./options.nix
     ./hardware.nix
     ./../../system
   ];

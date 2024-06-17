@@ -3,8 +3,6 @@
 
 {
   imports = [
-    # ./options.nix
-
     inputs.hyprland.homeManagerModules.default
     inputs.nix-colors.homeManagerModules.default
 
