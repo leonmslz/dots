@@ -1,8 +1,8 @@
 # sddm.nix - Configuration File For Sddm Display Manager
-{ pkgs, ... }:
+{ config, pkgs, o, ... }:
 
 let
-  sddm-theme = import ./sddm-theme.nix { inherit pkgs; };
+  sddm-theme = import ./sddm-theme.nix { inherit pkgs o; };
 in
 {
   # --- Sddm ---
@@ -11,13 +11,18 @@ in
     sddm = {
       enable = true;
       package = pkgs.sddm;
+
       # Wayland Support
       wayland.enable = true;
       enableHidpi = true;
+
       # Theming
       theme = "${sddm-theme}";
-      settings.Theme.CursorTheme = "Bibata-Modern-Classic";
-      settings.Theme.CursorSize = 22;
+
+      settings.Theme = {
+        CursorTheme = config.stylix.cursor.name;
+        CursorSize  = config.stylix.cursor.size;
+      };
     };
   };
 }
