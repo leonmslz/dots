@@ -4,7 +4,6 @@
 {
   imports = [
     inputs.hyprland.homeManagerModules.default
-    inputs.nix-colors.homeManagerModules.default
 
     ../../home/config
   ];
@@ -59,16 +58,14 @@
     };
   };
 
-  # Cursor-Theming
-  home.pointerCursor = {
-    gtk.enable = true;
-    x11.enable = true;
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Classic";
-    size = lib.mkForce 22;
-  };
-
-  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-dark-medium;
+  # # Cursor-Theming
+  # home.pointerCursor = {
+  #   gtk.enable = true;
+  #   x11.enable = true;
+  #   package = pkgs.bibata-cursors;
+  #   name = "Bibata-Modern-Classic";
+  #   size = lib.mkForce 22;
+  # };
 
   # Let Home-Manager Manage Itself
   programs.home-manager.enable = true;
