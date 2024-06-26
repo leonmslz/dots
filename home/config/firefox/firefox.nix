@@ -1,7 +1,10 @@
 # firefox.nix - Nix Declarative Configuration File For Firefox Web Browser
+{ pkgs, ... }:
+
 {
   programs.firefox = {
     enable = true;
+    package = pkgs.firefox;
 
     profiles.leon = {
 

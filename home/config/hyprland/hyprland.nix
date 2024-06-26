@@ -1,22 +1,24 @@
 # hyprland.nix - Nix Declarative Configuration File For Hyprland Wayland Compositor
-{ inputs, config, pkgs, ... }:
+{ inputs, config, pkgs, o, ... }:
 
 let
   hyprplugins = inputs.hyprland-plugins.packages.${pkgs.system};
 
-  wallpaperPath = "~/Downloads/Wallpaper.png";
+  wallpaperPath = "${o.flakeDir}/assets/Wallpaper.png";
 in
 {
+  # --- Hyprland ---
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
     systemd.enable = true;
 
+    # Hyprland plugins
     plugins = with hyprplugins; [
       hyprbars hyprexpo
     ];
 
-    settings = with config.colorScheme.palette; {
+    settings = with config.lib.stylix.colors; {
 
       plugin = {
         hyprexpo = {
@@ -81,7 +83,7 @@ in
       };
 
       master = {
-        new_is_master = false;
+        # new_is_master = false;
         mfact         = "0.5";
       };
 
@@ -97,6 +99,7 @@ in
       # Issue due to Hyprland (v0.40.0) and Nvidia-Drivers
       monitor = [ "Unknown-1,disable" ];
 
+      # Keybindings
       keybindings =
         let
           mainMod = "SUPER";
@@ -147,11 +150,12 @@ in
               ];
           };
 
+      # Autostart Programs
       exec-once = [
-        "${pkgs.waybar}/bin/waybar &"
-        "${pkgs.hyprpaper}/bin/hyprpaper"
-        "${pkgs.networkmanagerapplet}/bin/nm-applet &"
-        "${pkgs.blueman}/bin/blueman-applet &"
+        "${pkgs.waybar}/bin/waybar &"                  # Waybar Status-Bar
+        "${pkgs.hyprpaper}/bin/hyprpaper &"            # Hyprpaper Wallpaper Utility
+        "${pkgs.networkmanagerapplet}/bin/nm-applet &" # Network-Manager Applet
+        "${pkgs.blueman}/bin/blueman-applet &"         # Bluetooth-Manager Applet
       ];
     };
   };

@@ -108,6 +108,7 @@
   :doc    "Custom Keybindings For Dired Major Mode."
   :keymap dired-mode-map
   "u" #'cef-dired-directory-up
+  "x" #'cef-dired-toggle-execute-permission
   "<mouse-2>" #'dired-find-file)
 
 ;; Term-Mode Keybindings

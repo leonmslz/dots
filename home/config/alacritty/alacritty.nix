@@ -7,7 +7,7 @@
 
     settings = {
 
-      colors = with config.colorScheme.palette; {
+      colors = with config.lib.stylix.colors; {
         primary = {
           background = "#${base00}";
           foreground = "#${base07}";

@@ -22,5 +22,8 @@
   (unless (package-installed-p language)
     (package-install language)))
 
+;; => Add Certain File-Extensions To Modes
+(add-to-list 'auto-mode-alist '("\\.pde\\'" . java-mode))
+
 ;; --- Export ---
 (provide 'languages)

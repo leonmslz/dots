@@ -1,5 +1,5 @@
 # waybar.nix - Nix Declarative Configuration File For Waybar Status-Bar
-{ inputs, config, pkgs, scripts, ... }:
+{ inputs, config, lib, pkgs, scripts, ... }:
 
 {
   programs.waybar = {
@@ -66,7 +66,7 @@
       };
     }];
 
-    style = with config.colorScheme.palette; ''
+    style = with config.lib.stylix.colors; ''
       @define-color background #${base00};
       @define-color foreground #${base06};
       @define-color border     #${base03};

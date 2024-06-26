@@ -115,5 +115,15 @@
   (interactive)
   (find-alternate-file ".."))
 
+;; Make Files Executable
+(defun cef-dired-toggle-execute-permission ()
+  "Toggle Execute-Permission Of All Selected Files."
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (dolist (f files)
+      (when-let* ((cmode (file-modes f))
+                  (nmode (if (zerop (logand cmode #o111)) (logior cmode #o111) (logand cmode (lognot #o111)))))
+        (set-file-modes f nmode)))))
+
 ;; --- Export ---
 (provide 'miscellaneous)
