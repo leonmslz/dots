@@ -10,6 +10,7 @@ let
       specialArgs = special-args;
       modules = [
         system-nix
+        inputs.stylix.nixosModules.stylix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = special-args;
           home-manager.useGlobalPkgs = true;
