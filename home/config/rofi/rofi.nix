@@ -7,7 +7,7 @@ let
   rofiTheme = {
 
     "*" = with config.lib.stylix.colors; {
-      font           = "FontAwesome, Iosevka 12";
+      font           = "FontAwesome, ZedMono Nerd Font 12";
 
       b-color        = mkLiteral "#${base00}FF";
       wbg-color      = mkLiteral "#${base00}DD";

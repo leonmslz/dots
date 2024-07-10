@@ -1,7 +1,7 @@
 /* style.css - Styling For Waybar Status-Bar */
 * {
     border              : none;
-    font-family         : Iosevka, Font Awesome, Roboto, Arial, sans-serif;
+    font-family         : ZedMono Nerd Font, Font Awesome, Roboto, Arial, sans-serif;
     font-size           : 13px;
     border-radius       : 7px 12px;
     color               : @foreground;
@@ -12,38 +12,39 @@ window#waybar {
 }
 
 .modules-left {
-    /*                    top | right | bottom | left */
-    margin              : 10px 0 0 10px;
+    margin              : 15px 2.5px 0 20px;
 }
 
+/*                    top | right | bottom | left */
 .modules-right {
-    /*                    top | right | bottom | left */
-    margin              : 0 0 10px 10px;
+    margin              : 0 2.5px 10px 20px;
 }
 
 #custom-nix-icon {
     font-size           : 1.5rem;
     background-color    : @highlight;
-    padding             : 8px 8px 8px 4px;
+    padding             : 8px 8px 8px 2px;
     margin              : 0 0 10px 0px;
-    border              : 2px solid @border;
+    box-shadow          : alpha(@highlight, 0.6) -2px 2px,
+                          alpha(@highlight, 0.5) -4px 4px,
+                          alpha(@highlight, 0.4) -6px 6px;
 }
 
 #workspaces {
-    border              : 2px solid @border;
     background-color    : @background;
+    margin              : 0 0 10px 0;
+    box-shadow          : alpha(@border, 0.6) -2px 2px,
+                          alpha(@border, 0.5) -4px 4px,
+                          alpha(@border, 0.4) -6px 6px;
 }
-
 #workspaces button {
     transition          : none;
     padding             : 8px 8px 12px 8px;
 }
-
 #workspaces button:hover {
     transition          : none;
     background-color    : @hover;
 }
-
 #workspaces button.active {
     transition          : none;
     background-color    : @hover;
@@ -51,11 +52,12 @@ window#waybar {
 }
 
 #tray {
-    border              : 2px solid @border;
     background-color    : @background;
-    /*                    top | right | bottom | left */
     padding             : 10px 5px 10px 5px;
     margin              : 0 0 10px 0;
+    box-shadow          : alpha(@border, 0.6) -2px 2px,
+                          alpha(@border, 0.5) -4px 4px,
+                          alpha(@border, 0.4) -6px 6px;
 }
 
 #pulseaudio-slider highlight {
@@ -63,7 +65,6 @@ window#waybar {
     border-radius       : 5px;
     background          : @slider;
 }
-
 #pulseaudio-slider slider {
     min-height          : 0px;
     min-width           : 0px;
@@ -72,12 +73,31 @@ window#waybar {
     border              : none;
     box-shadow          : none;
 }
-
+#pulseaudio {
+    background-color    : @background;
+    color               : @slider;
+    font-size           : 1.1rem;
+    padding             : 10px 5px 10px 5px;
+    margin              : 0 0 -10px 0;
+    border-radius       : 7px 12px 0px 0px;
+    box-shadow          : alpha(@border, 0.6) -2px 2px,
+                          alpha(@border, 0.5) -4px 4px,
+                          alpha(@border, 0.4) -6px 6px;
+}
+#pulseaudio.muted {
+    color                : @logout;
+}
 #pulseaudio-slider {
-    border              : 2px solid @border;
     background-color    : @background;
     padding             : 10px 5px 10px 5px;
+    border-radius       : 0px 0px 7px 12px;
     margin              : 0 0 10px 0;
+    box-shadow          : alpha(@border, 0.6) -2px 0px,
+                          alpha(@border, 0.5) -4px 0px,
+                          alpha(@border, 0.4) -6px 0px,
+                          alpha(@border, 0.6) -2px 2px,
+                          alpha(@border, 0.5) -4px 4px,
+                          alpha(@border, 0.4) -6px 6px;
 }
 
 #pulseaudio-slider trough {
@@ -88,16 +108,19 @@ window#waybar {
 }
 
 #clock {
-    border              : 2px solid @border;
     background-color    : @background;
-    /*                    top | right | bottom | left */
     padding             : 10px 5px 10px 5px;
     margin              : 0 0 10px 0;
+    box-shadow          : alpha(@border, 0.6) -2px 2px,
+                          alpha(@border, 0.5) -4px 4px,
+                          alpha(@border, 0.4) -6px 6px;
 }
 
 #custom-power {
-    border              : 2px solid @border;
     background-color    : @logout;
-    /*                    top | right | bottom | left */
     padding             : 10px 0 10px 0;
+    margin              : 0 0 10px 0;
+    box-shadow          : alpha(@logout, 0.6) -2px 2px,
+                          alpha(@logout, 0.5) -4px 4px,
+                          alpha(@logout, 0.4) -6px 6px;
 }

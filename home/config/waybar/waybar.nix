@@ -16,6 +16,7 @@
 
       modules-right = [
         "tray"
+        "pulseaudio"
         "pulseaudio/slider"
         "clock#time"
         "clock#date"
@@ -24,17 +25,18 @@
 
       "custom/nix-icon" = {
         format = "󱄅";
+        tooltip = false;
       };
 
       "hyprland/workspaces" = {
         format = "{icon}";
         format-icons = {
-          "1" = "";
-          "2" = "";
-          "3" = "";
-          "4" = "";
+          "1" = " ";
+          "2" = " ";
+          "3" = " ";
+          "4" = " ";
           "5" = "";
-          "default" = "";
+          "default" = " ";
         };
         persistent-workspaces = {
           "*" = [ 1 2 3 4 ];
@@ -54,20 +56,33 @@
         format = "{:%d\n%m\n%y}";
       };
 
+      "pulseaudio" = {
+        ignored-sinks = ["Easy Effects Sink"];
+        format = "{icon}";
+        format-muted = "󰝟";
+        tooltip = true;
+        tooltip-format = "{volume}%";
+        format-icons = {
+          default = ["󰕿" "󰖀" "󰕾"];
+        };
+      };
+
       "pulseaudio/slider" = {
+        ignored-sinks = ["Easy Effects Sink"];
         min = 0;
         max = 100;
         orientation = "vertical";
       };
 
       "custom/power" = {
-        format = "";
+        format = " ";
         on-click = "${scripts.rofi-logout-menu}/bin/rofi-logout-menu";
+        tooltip = false;
       };
     }];
 
     style = with config.lib.stylix.colors; ''
-      @define-color background #${base00};
+      @define-color background #${base01};
       @define-color foreground #${base06};
       @define-color border     #${base03};
       @define-color hover      #${base02};

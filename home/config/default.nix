@@ -8,5 +8,6 @@
     ./waybar/waybar.nix
     ./rofi/rofi.nix
     ./firefox/firefox.nix
+    ./fastfetch/fastfetch.nix
   ];
 }

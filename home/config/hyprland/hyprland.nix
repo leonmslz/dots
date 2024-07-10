@@ -31,10 +31,14 @@ in
         hyprbars = {
           bar_height      = 20;
           bar_text_size   = 8;
-          bar_text_font   = "Iosevka";
-          bar_color       = "rgba(${base07}55)";
+          bar_text_font   = "ZedMono Nerd Font";
+          bar_color       = "rgba(${base07}77)";
           "col.text"      = "rgba(${base00}FF)";
-          hyprbars-button = "rgb(${base0E}), 12, , hyprctl dispatch killactive";
+          hyprbars-button = [
+            "rgb(${base0E}), 10, , hyprctl dispatch killactive"
+            "rgb(${base0B}), 10, , hyprctl dispatch togglefloating"
+            "rgb(${base0A}), 10, , hyprctl dispatch fullscreen"
+          ];
         };
       };
 
@@ -45,19 +49,19 @@ in
       };
 
       general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 3;
+        gaps_in = 7.5;
+        gaps_out = 15;
+        border_size = 2;
         "col.active_border" = "rgba(${base05}FF)";
         "col.inactive_border" = "rgba(${base03}FF)";
         layout = "master";
       };
 
       decoration = {
-        rounding = 5;
+        rounding = 10;
         drop_shadow = true;
-        shadow_range = 4;
-        shadow_render_power = 3;
+        shadow_range = 10;
+        shadow_render_power = 5;
         "col.shadow" = "rgba(${base00}EE)";
       };
 

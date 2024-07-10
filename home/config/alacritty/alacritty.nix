@@ -47,15 +47,15 @@
       font = {
         size = 10.5;
         bold = {
-          family   = "Iosevka";
+          family   = "ZedMono Nerd Font";
           style    = "Bold";
         };
         italic =  {
-          family   = "Iosevka";
+          family   = "ZedMono Nerd Font";
           style    = "Italic";
         };
         normal = {
-          family   = "Iosevka";
+          family   = "ZedMono Nerd Font";
           style    = "Regular";
         };
       };
