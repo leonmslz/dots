@@ -9,5 +9,6 @@
     ./rofi/rofi.nix
     ./firefox/firefox.nix
     ./fastfetch/fastfetch.nix
+    ./wlogout/wlogout.nix
   ];
 }

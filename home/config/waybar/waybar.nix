@@ -16,7 +16,7 @@
 
       modules-right = [
         "tray"
-        "pulseaudio"
+        # "pulseaudio"
         "pulseaudio/slider"
         "clock#time"
         "clock#date"
@@ -56,16 +56,16 @@
         format = "{:%d\n%m\n%y}";
       };
 
-      "pulseaudio" = {
-        ignored-sinks = ["Easy Effects Sink"];
-        format = "{icon}";
-        format-muted = "󰝟";
-        tooltip = true;
-        tooltip-format = "{volume}%";
-        format-icons = {
-          default = ["󰕿" "󰖀" "󰕾"];
-        };
-      };
+      # "pulseaudio" = {
+      #   ignored-sinks = ["Easy Effects Sink"];
+      #   format = "{icon}";
+      #   format-muted = "󰝟";
+      #   tooltip = true;
+      #   tooltip-format = "{volume}%";
+      #   format-icons = {
+      #     default = ["󰕿" "󰖀" "󰕾"];
+      #   };
+      # };
 
       "pulseaudio/slider" = {
         ignored-sinks = ["Easy Effects Sink"];
@@ -76,7 +76,7 @@
 
       "custom/power" = {
         format = " ";
-        on-click = "${scripts.rofi-logout-menu}/bin/rofi-logout-menu";
+        on-click = "${pkgs.wlogout}/bin/wlogout";
         tooltip = false;
       };
     }];

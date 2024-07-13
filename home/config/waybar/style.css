@@ -73,31 +73,31 @@ window#waybar {
     border              : none;
     box-shadow          : none;
 }
-#pulseaudio {
-    background-color    : @background;
-    color               : @slider;
-    font-size           : 1.1rem;
-    padding             : 10px 5px 10px 5px;
-    margin              : 0 0 -10px 0;
-    border-radius       : 7px 12px 0px 0px;
-    box-shadow          : alpha(@border, 0.6) -2px 2px,
-                          alpha(@border, 0.5) -4px 4px,
-                          alpha(@border, 0.4) -6px 6px;
-}
-#pulseaudio.muted {
-    color                : @logout;
-}
+/* #pulseaudio { */
+/*     background-color    : @background; */
+/*     color               : @slider; */
+/*     font-size           : 1.1rem; */
+/*     padding             : 10px 5px 10px 5px; */
+/*     margin              : 0 0 -10px 0; */
+/*     border-radius       : 7px 12px 0px 0px; */
+/*     box-shadow          : alpha(@border, 0.6) -2px 2px, */
+/*                           alpha(@border, 0.5) -4px 4px, */
+/*                           alpha(@border, 0.4) -6px 6px; */
+/* } */
+/* #pulseaudio.muted { */
+/*     color                : @logout; */
+/* } */
 #pulseaudio-slider {
     background-color    : @background;
     padding             : 10px 5px 10px 5px;
-    border-radius       : 0px 0px 7px 12px;
+    /* border-radius       : 0px 0px 7px 12px; */
     margin              : 0 0 10px 0;
-    box-shadow          : alpha(@border, 0.6) -2px 0px,
-                          alpha(@border, 0.5) -4px 0px,
-                          alpha(@border, 0.4) -6px 0px,
-                          alpha(@border, 0.6) -2px 2px,
+    box-shadow          : alpha(@border, 0.6) -2px 2px,
                           alpha(@border, 0.5) -4px 4px,
                           alpha(@border, 0.4) -6px 6px;
+    /* alpha(@border, 0.6) -2px 0px, */
+    /* alpha(@border, 0.5) -4px 0px, */
+    /* alpha(@border, 0.4) -6px 0px, */
 }
 
 #pulseaudio-slider trough {
