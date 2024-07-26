@@ -1,9 +1,10 @@
 # alacritty.nix - Nix Declarative Configuration File For Alacritty Terminal Emulator
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.alacritty = {
     enable = true;
+    package = pkgs.alacritty;
 
     settings = {
 

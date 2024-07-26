@@ -14,7 +14,7 @@ let
       fg-color       = mkLiteral "#${base07}FF";
       fgp-color      = mkLiteral "#${base04}FF";
       hl-color       = mkLiteral "#${base0D}FF";
-      w-border-color = mkLiteral "#${base05}FF";
+      w-border-color = mkLiteral "#${base03}FF";
 
       g-spacing      = mkLiteral "10px";
       g-margin       = mkLiteral "0";

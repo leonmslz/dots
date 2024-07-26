@@ -1,6 +1,6 @@
 /* style.css - Styling For Wlogout Logout Menu */
 * {
-    font-family         : ZedMono Nerd Font, Font Awesome, sans-serif;
+    font-family         : ZedMono Nerd Font, Font Awesome;
     background-image    : none;
     transition          : 20ms;
 }
@@ -16,8 +16,8 @@ button {
     background-position : center;
     background-size     : 25%;
     border-style        : solid;
-    background-color    : rgba(12, 12, 12, 0.3);
-    border              : 2px solid @border;
+    background-color    : alpha(@background, 0.7);
+    border              : 2px solid @background;
     box-shadow          : 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
@@ -29,7 +29,7 @@ button:focus {
 button:hover {
     color               : @foreground;
     background-color    : alpha(@hover, 0.4);
-    border              : 2px solid @foreground;
+    border              : 2px solid @border;
 }
 
 #logout {

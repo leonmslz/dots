@@ -4,7 +4,8 @@
     ./emacs
     ./zsh
     ./alacritty/alacritty.nix
-    ./hyprland/hyprland.nix
+    ./hypr/hyprland.nix
+    ./hypr/hyprpaper.nix
     ./waybar/waybar.nix
     ./rofi/rofi.nix
     ./firefox/firefox.nix

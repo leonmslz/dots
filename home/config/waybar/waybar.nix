@@ -4,29 +4,36 @@
 {
   programs.waybar = {
     enable = true;
+    package = pkgs.waybar;
 
     settings = [{
       layer = "top";
+      width = 50;
       position = "left";
+      margin = "15 0 15 15";
 
       modules-left = [
         "custom/nix-icon"
         "hyprland/workspaces"
       ];
 
+      modules-center = [
+        "wlr/taskbar"
+      ];
+
       modules-right = [
         "tray"
-        # "pulseaudio"
+        "custom/audio-icon"
         "pulseaudio/slider"
-        "clock#time"
-        "clock#date"
+        "custom/muted-icon"
+        "clock"
         "custom/power"
       ];
 
-      "custom/nix-icon" = {
-        format = "󱄅";
-        tooltip = false;
-      };
+      "custom/nix-icon"   = { format = "󱄅 "; tooltip = false; };
+      "custom/audio-icon" = { format = "󰕾 "; tooltip = false; };
+      "custom/muted-icon" = { format = "󰝟 "; tooltip = false; };
+      "custom/power"      = { format = " "; on-click = "${pkgs.wlogout}/bin/wlogout"; tooltip = false; };
 
       "hyprland/workspaces" = {
         format = "{icon}";
@@ -35,7 +42,6 @@
           "2" = " ";
           "3" = " ";
           "4" = " ";
-          "5" = "";
           "default" = " ";
         };
         persistent-workspaces = {
@@ -43,29 +49,25 @@
         };
       };
 
+      "wlr/taskbar"= {
+        format = "{icon}";
+        icon-size = 24;
+        spacing = 3;
+        sort-by-app-id = true;
+        on-click-middle = "close";
+        tooltip-format = "{title}";
+        on-click = "activate";
+      };
+
       "tray" = {
         icon-size = 15;
         spacing = 10;
       };
 
-      "clock#time" = {
+      "clock" = {
         format = "{:%H\n%M}";
+        tooltip-format = "{:%H:%M %d.%m.%y}";
       };
-
-      "clock#date" = {
-        format = "{:%d\n%m\n%y}";
-      };
-
-      # "pulseaudio" = {
-      #   ignored-sinks = ["Easy Effects Sink"];
-      #   format = "{icon}";
-      #   format-muted = "󰝟";
-      #   tooltip = true;
-      #   tooltip-format = "{volume}%";
-      #   format-icons = {
-      #     default = ["󰕿" "󰖀" "󰕾"];
-      #   };
-      # };
 
       "pulseaudio/slider" = {
         ignored-sinks = ["Easy Effects Sink"];
@@ -73,23 +75,17 @@
         max = 100;
         orientation = "vertical";
       };
-
-      "custom/power" = {
-        format = " ";
-        on-click = "${pkgs.wlogout}/bin/wlogout";
-        tooltip = false;
-      };
     }];
 
     style = with config.lib.stylix.colors; ''
-      @define-color background #${base01};
-      @define-color foreground #${base06};
+      @define-color background #${base00};
+      @define-color foreground #${base07};
       @define-color border     #${base03};
       @define-color hover      #${base02};
       @define-color selected   #${base0B};
       @define-color slider     #${base0A};
       @define-color highlight  #${base0D};
-      @define-color logout     #${base0E};
+      @define-color logout     #${base08};
 
       @import "${./style.css}";
     '';

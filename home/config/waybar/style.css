@@ -1,63 +1,57 @@
 /* style.css - Styling For Waybar Status-Bar */
 * {
     border              : none;
-    font-family         : ZedMono Nerd Font, Font Awesome, Roboto, Arial, sans-serif;
+    font-family         : ZedMono NF, Font Awesome;
     font-size           : 13px;
-    border-radius       : 7px 12px;
+    border-radius       : 15px;
     color               : @foreground;
+    transition          : none;
 }
 
 window#waybar {
-    background          : rgba(0, 0, 0, 0);
+    background          : alpha(@background, 0.7);
 }
 
 .modules-left {
-    margin              : 15px 2.5px 0 20px;
+    margin              : 10px 2.5px 0 2.5px;
+}
+
+.modules-center {
+    margin              : 0 2.5px 0 2.5px;
 }
 
 /*                    top | right | bottom | left */
 .modules-right {
-    margin              : 0 2.5px 10px 20px;
+    margin              : 0 2.5px 10px 2.5px;
 }
 
 #custom-nix-icon {
-    font-size           : 1.5rem;
-    background-color    : @highlight;
-    padding             : 8px 8px 8px 2px;
-    margin              : 0 0 10px 0px;
-    box-shadow          : alpha(@highlight, 0.6) -2px 2px,
-                          alpha(@highlight, 0.5) -4px 4px,
-                          alpha(@highlight, 0.4) -6px 6px;
+    color               : @highlight;
+    font-size           : 1.7rem;
+    padding             : 6px 4px 6px 6px;
 }
 
-#workspaces {
-    background-color    : @background;
-    margin              : 0 0 10px 0;
-    box-shadow          : alpha(@border, 0.6) -2px 2px,
-                          alpha(@border, 0.5) -4px 4px,
-                          alpha(@border, 0.4) -6px 6px;
-}
 #workspaces button {
-    transition          : none;
-    padding             : 8px 8px 12px 8px;
+    color               : @slider;
+    padding             : 8px 8px 8px 8px;
 }
+
 #workspaces button:hover {
-    transition          : none;
     background-color    : @hover;
 }
+
 #workspaces button.active {
-    transition          : none;
+    color               : @slider;
     background-color    : @hover;
-    box-shadow          : inset 0 -4px @selected;
 }
 
 #tray {
-    background-color    : @background;
     padding             : 10px 5px 10px 5px;
-    margin              : 0 0 10px 0;
-    box-shadow          : alpha(@border, 0.6) -2px 2px,
-                          alpha(@border, 0.5) -4px 4px,
-                          alpha(@border, 0.4) -6px 6px;
+}
+
+#custom-audio-icon {
+    color               : @slider;
+    padding             : 10px 0 5px 2px;
 }
 
 #pulseaudio-slider highlight {
@@ -65,6 +59,7 @@ window#waybar {
     border-radius       : 5px;
     background          : @slider;
 }
+
 #pulseaudio-slider slider {
     min-height          : 0px;
     min-width           : 0px;
@@ -73,54 +68,28 @@ window#waybar {
     border              : none;
     box-shadow          : none;
 }
-/* #pulseaudio { */
-/*     background-color    : @background; */
-/*     color               : @slider; */
-/*     font-size           : 1.1rem; */
-/*     padding             : 10px 5px 10px 5px; */
-/*     margin              : 0 0 -10px 0; */
-/*     border-radius       : 7px 12px 0px 0px; */
-/*     box-shadow          : alpha(@border, 0.6) -2px 2px, */
-/*                           alpha(@border, 0.5) -4px 4px, */
-/*                           alpha(@border, 0.4) -6px 6px; */
-/* } */
-/* #pulseaudio.muted { */
-/*     color                : @logout; */
-/* } */
+
 #pulseaudio-slider {
-    background-color    : @background;
-    padding             : 10px 5px 10px 5px;
-    /* border-radius       : 0px 0px 7px 12px; */
-    margin              : 0 0 10px 0;
-    box-shadow          : alpha(@border, 0.6) -2px 2px,
-                          alpha(@border, 0.5) -4px 4px,
-                          alpha(@border, 0.4) -6px 6px;
-    /* alpha(@border, 0.6) -2px 0px, */
-    /* alpha(@border, 0.5) -4px 0px, */
-    /* alpha(@border, 0.4) -6px 0px, */
+    padding             : 10px 0 10px 0;
 }
 
 #pulseaudio-slider trough {
-    min-height          : 80px;
+    min-height          : 50px;
     min-width           : 10px;
     border-radius       : 5px;
     background-color    : black;
 }
 
+#custom-muted-icon {
+    color               : @slider;
+    padding             : 5px 0 10px 2px;
+}
+
 #clock {
-    background-color    : @background;
     padding             : 10px 5px 10px 5px;
-    margin              : 0 0 10px 0;
-    box-shadow          : alpha(@border, 0.6) -2px 2px,
-                          alpha(@border, 0.5) -4px 4px,
-                          alpha(@border, 0.4) -6px 6px;
 }
 
 #custom-power {
-    background-color    : @logout;
+    color               : @logout;
     padding             : 10px 0 10px 0;
-    margin              : 0 0 10px 0;
-    box-shadow          : alpha(@logout, 0.6) -2px 2px,
-                          alpha(@logout, 0.5) -4px 4px,
-                          alpha(@logout, 0.4) -6px 6px;
 }

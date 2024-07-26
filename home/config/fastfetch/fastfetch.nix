@@ -1,9 +1,10 @@
 # fastfetch.nix - Nix Declarative Configuration File For Fastfetch Utility
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.fastfetch = {
     enable = true;
+    package = pkgs.fastfetch;
 
     settings = {
       "logo" = "nixos";

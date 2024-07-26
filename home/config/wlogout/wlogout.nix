@@ -1,9 +1,10 @@
 # wlogout.nix - Nix Declarative Configuration File For Wlogout Logout Menu
-{ config, ...}:
+{ config, pkgs, ...}:
 
 {
   programs.wlogout = {
     enable = true;
+    package = pkgs.wlogout;
 
     layout = [
       {
@@ -27,8 +28,8 @@
     ];
 
     style = with config.lib.stylix.colors; ''
-      @define-color background #${base01};
-      @define-color foreground #${base06};
+      @define-color background #${base00};
+      @define-color foreground #${base07};
       @define-color border     #${base03};
       @define-color hover      #${base02};
 
