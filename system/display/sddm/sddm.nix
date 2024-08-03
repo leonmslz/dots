@@ -2,10 +2,19 @@
 { config, pkgs, o, ... }:
 
 let
-  sddm-theme = import ./sddm-theme.nix { inherit pkgs o; };
+  sddm-theme = import ./sddm-theme.nix { inherit config pkgs o; };
 in
 {
   # --- Sddm ---
+
+  environment.systemPackages =
+    (with pkgs.libsForQt5.qt5; [
+      qtsvg qtgraphicaleffects qtquickcontrols2
+    ])
+    ++
+    (with pkgs; [
+      bibata-cursors
+    ]);
 
   services.displayManager = {
     sddm = {

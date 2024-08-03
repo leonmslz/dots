@@ -1,8 +1,8 @@
 # sddm-theme.nix - Theme For Sddm Display Manager
-{ pkgs, o, ... }:
+{ config, pkgs, o, ... }:
 
 let
-  image = ./../../../assets/Wallpaper.png;
+  image = config.stylix.image;
   theme = ./theme.conf;
 in
 pkgs.stdenv.mkDerivation {
