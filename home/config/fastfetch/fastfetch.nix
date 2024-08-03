@@ -7,10 +7,10 @@
     package = pkgs.fastfetch;
 
     settings = {
-      "logo" = "nixos";
+      logo = "nixos";
 
-      "display" = {
-        "separator" = "   ";
+      display = {
+        separator = "   ";
       };
 
       modules = [
