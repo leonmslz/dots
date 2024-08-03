@@ -4,6 +4,7 @@
 {
   imports = [
     inputs.hyprland.homeManagerModules.default
+    inputs.nur.hmModules.nur
 
     ../../home/config
   ];
@@ -16,25 +17,26 @@
   # User Specific Packages
   home.packages =
     (with pkgs; [
-      emacs29-pgtk # Editor
+      # emacs29-pgtk # Editor
       vim # Terminal Editor
-      alacritty # Terminal Emulator
-      firefox # Browser
-      rofi-wayland # Program-Launcher
-      waybar # Status-Bar
+      # alacritty # Terminal Emulator
+      # firefox # Browser
+      # rofi-wayland # Program-Launcher
+      # waybar # Status-Bar
       gnome.eog # Image-Viewer
       gnome.nautilus # File-Manager
       evince # PDF-Viewer
-      qrencode # QR-Code Utility
+      # qrencode # QR-Code Utility
       prismlauncher # Minecraft-Launcher
       networkmanagerapplet # Network-Manager-Applet
-      bottles # Wine-Manager
-      wine-wayland
+      # bottles # Wine-Manager
+      # wine-wayland
       fastfetch # Fetching Tool
       hyprpicker # Color-Picker Tool
       # processing
       nix-prefetch-scripts # Collection of all the nix-prefetch-* scripts which may be used to obtain source hashes
       cider # Apple Music
+      imagemagick
     ])
     ++
     (with scripts; [
@@ -57,15 +59,6 @@
       name = "Papirus-Dark";
     };
   };
-
-  # # Cursor-Theming
-  # home.pointerCursor = {
-  #   gtk.enable = true;
-  #   x11.enable = true;
-  #   package = pkgs.bibata-cursors;
-  #   name = "Bibata-Modern-Classic";
-  #   size = lib.mkForce 22;
-  # };
 
   # Let Home-Manager Manage Itself
   programs.home-manager.enable = true;

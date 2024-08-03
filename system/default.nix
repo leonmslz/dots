@@ -9,5 +9,6 @@
     ./printing.nix
     ./audio.nix
     ./networking.nix
+    ./stylix.nix
   ];
 }
