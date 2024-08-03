@@ -22,9 +22,11 @@
 ;; Apply Face-Attributes
 (set-face-attribute 'default
                     nil
-                    :family "Iosevka"
+                    :family "ZedMono Nerd Font"
                     :height cef-font-size
-                    :weight 'regular)
+                    :weight 'medium)
 
 ;; --- Export ---
 (provide 'appearance)
+
+;;; appearance.el ends here

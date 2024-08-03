@@ -7,7 +7,7 @@
 
 ;; Height Of Mode-Line
 (defvar-local cef-mline-module/beginning
-    '(:eval (propertize " " 'display '((height 1.5) (raise -0.15))))
+    '(:eval (propertize " " 'display '((height 1.5) (raise -0.2))))
   "Mode-Line Module Which Puts A Small Icon Depending On A State On The Mode-Line.")
 (put 'cef-mline-module/beginning 'risky-local-variable t)
 
@@ -302,7 +302,7 @@
   "Return a string of `window-width' length.
    Containing LEFT, and RIGHT aligned respectively."
   (let* ((size (+ (length (format-mode-line left))
-                  (length (format-mode-line right)) 3))
+                  (length (format-mode-line right)) 2))
          (width (window-total-width))
          (available-width (- width size)))
     (append left

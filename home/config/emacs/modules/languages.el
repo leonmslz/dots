@@ -25,5 +25,13 @@
 ;; => Add Certain File-Extensions To Modes
 (add-to-list 'auto-mode-alist '("\\.pde\\'" . java-mode))
 
+;; Flycheck
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+
 ;; --- Export ---
 (provide 'languages)
+
+;;; languages.el ends here
