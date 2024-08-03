@@ -8,7 +8,7 @@
 
     settings =
       let
-        wallpaper = "${o.flakeDir}/assets/Wallpaper.png";
+        wallpaper = "${config.stylix.image}";
       in
         {
           ipc       = "on";

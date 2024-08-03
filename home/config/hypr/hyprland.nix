@@ -1,7 +1,9 @@
 # hyprland.nix - Nix Declarative Configuration File For Hyprland Wayland Compositor
-{ inputs, config, pkgs, ... }:
+{ inputs, config, lib, pkgs, ... }:
 
 let
+
+  # Hyprland Plugins
   hyprplugins = inputs.hyprland-plugins.packages.${pkgs.system};
 in
 {
@@ -18,7 +20,10 @@ in
 
     settings = with config.lib.stylix.colors; {
 
+      # --- Plugins ---
       plugin = {
+
+        # Hyprexpo - Overview Plugin
         hyprexpo = {
           columns = 3;
           gap_size = 5;
@@ -26,6 +31,7 @@ in
           workspace_method = "first 1";
         };
 
+        # Hyprbars - Title Bar Plugin
         hyprbars = {
           bar_height      = 20;
           bar_text_size   = 8;
@@ -38,6 +44,7 @@ in
             "rgb(${base0A}), 10, , hyprctl dispatch fullscreen"
           ];
         };
+
       };
 
       input = {
@@ -89,6 +96,7 @@ in
         mfact         = "0.5";
       };
 
+      # --- Window Rules ---
       windowrulev2 = [
         # Make All Windows Floating By Default
         "float, class:.*"
@@ -101,61 +109,88 @@ in
         "size 600 600, class:^(org.gnome.Nautilus)$"
       ];
 
-      # Issue due to Hyprland (v0.40.0) and Nvidia-Drivers
-      monitor = [ "Unknown-1,disable" ];
-
-      # Keybindings
-      keybindings =
+      # --- Keybindings ---
+      _ =
         let
-          mainMod = "SUPER";
+          mainMod    = "SUPER";
           workspaces = [1 2 3 4 5 6 7 8 9];
         in
           {
-            bind =
-              (map (x:
-                "${mainMod}, ${(toString x)}, workspace, ${(toString x)}")
-                workspaces)
-              ++
-              (map (x:
-                "${mainMod} SHIFT, ${(toString x)}, movetoworkspace, ${(toString x)}")
-                workspaces)
-              ++
+            bind = lib.flatten
               [
+                # Switch Workspace
+                (map (x:
+                  "${mainMod}, ${(toString x)}, workspace, ${(toString x)}")
+                  workspaces)
+
+                "${mainMod}, mouse_down, workspace, e-1"
+                "${mainMod}, mouse_up,   workspace, e+1"
+
+                # Move Application To Workspace
+                (map (x:
+                  "${mainMod} SHIFT, ${(toString x)}, movetoworkspace, ${(toString x)}")
+                  workspaces)
+
+                # Open Applications
                 "${mainMod}, return, exec, alacritty"
-                "${mainMod}, B, exec, firefox"
+                "${mainMod}, B,      exec, firefox"
+                "${mainMod}, P,      exec, pcmanfm"
+                "${mainMod}, E,      exec, emacs"
+
+                # Kill Active Clint
                 "${mainMod}, C, killactive,"
-                "${mainMod}, P, exec, pcmanfm"
+
+                # Toggle Floating On Active Client
                 "${mainMod}, F, togglefloating,"
-                "${mainMod}, space, exec, rofi -show drun"
+
+                # Color Picker Tool
                 "${mainMod}, O, exec, hyprpicker | tr -d '\\n' | wl-copy"
-                "${mainMod}, G, exec, slurp | grim -g - $HOME/screenshot.png"
-                "${mainMod}, W, exec, grim -g \"$(slurp)\""
-                "${mainMod}, E, exec, emacs"
+
+                # Make Screenshot
+                "${mainMod}, W, exec, slurp | grim -g - $HOME/screenshot.png"
+
+                # Change Volume
                 "${mainMod}, A, exec, amixer sset Master 5%-"
                 "${mainMod}, D, exec, amixer sset Master 5%+"
                 "${mainMod}, S, exec, amixer sset Master toggle"
+
+                # Move Focus
                 "${mainMod}, H, movefocus, l"
                 "${mainMod}, J, movefocus, d"
                 "${mainMod}, K, movefocus, u"
                 "${mainMod}, L, movefocus, r"
+
+                # Move Window
                 "${mainMod} CTRL, H, movewindow, l"
                 "${mainMod} CTRL, J, movewindow, d"
                 "${mainMod} CTRL, K, movewindow, u"
                 "${mainMod} CTRL, L, movewindow, r"
-                "${mainMod}, mouse_down, workspace, e-1"
-                "${mainMod}, mouse_up, workspace, e+1"
-                # Hyprexpo
+
+                # Hyprexpo Plugin
                 "${mainMod}, p, hyprexpo:expo, toggle"
               ];
 
-            bindm =
+            bindr = lib.flatten
               [
+                # Open Program Launcher
+                "${mainMod}, Super_L, exec, rofi -show drun"
+                "${mainMod}, Super_R, exec, rofi -show drun"
+              ];
+
+            bindm = lib.flatten
+              [
+                # Move Active Window
                 "${mainMod}, mouse:272, movewindow"
+                # Resize Active Window
                 "${mainMod}, mouse:273, resizewindow"
               ];
           };
 
-      # Autostart Programs
+      # --- Troubleshooting ---
+      # Issue due to Hyprland (v0.40.0) and Nvidia-Drivers
+      monitor = [ "Unknown-1,disable" ];
+
+      # --- Autostart ---
       exec-once = [
         "${pkgs.waybar}/bin/waybar &"                  # Waybar Status-Bar
         "${pkgs.hyprpaper}/bin/hyprpaper &"            # Hyprpaper Wallpaper Utility
