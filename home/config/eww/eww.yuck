@@ -1,0 +1,71 @@
+;; eww.yuck - Main Configuration File For Eww-Statusbar
+
+;; Status Bar
+(defwidget bar []
+  (box :orientation "v"
+       (workspaces) (sidestuff)))
+
+(deflisten music :initial ""
+           "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+
+(defpoll volume :interval "1s"
+         "amixer sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'")
+
+(defpoll date :interval "1s" "date +'%H:%M Uhr am %A, den %d %b. %Y'")
+(defpoll hour :interval "1s" "date +%H")
+(defpoll min  :interval "1s" "date +%M")
+
+(deflisten ws `./workspaces.sh`)
+
+(defwidget sidestuff []
+           (box :class "sidestuff" :orientation "v" :space-evenly false :valign "end"  ;; Vertical layout for the sidestuff
+                (systray :orientation "v" :icon-size 15 :spacing 10)
+                (box :orientation "v"  ;; Changed to vertical orientation
+                     :class "metric"
+                     :space-evenly false
+                     (eventbox :cursor "ns-resize"
+                               (scale :min 0
+                                      :max 101
+                                      :flipped true
+                                      :orientation "v"
+                                      :active true
+                                      :value volume
+                                      :onchange "amixer sset Master {}%"))
+                     (box :class "label" "🔊")
+                     )
+                ;; Clock
+                (box :orientation "v"
+                     :class "clock"
+                     :tooltip "${date}"
+                     hour min)
+                ))
+
+(defwidget workspaces []
+           (box :class "workspaces"
+                :orientation "v"
+                :spacing 5
+                :space-evenly false
+                :valign "start"
+                (box :class "label" "󱄅 ")
+                (eventbox :cursor "pointer"
+                          (literal :content ws))))
+
+(defwidget music []
+  (box :class "music"
+       :orientation "v"  ;; Vertical orientation
+       :space-evenly false
+       :halign "center"
+    {music != "" ? "🎵${music}" : ""}))
+
+(defwindow bar
+           :monitor 0
+           :windowtype "dock"
+           :geometry (geometry :x "0%"
+                               :y "0%"
+                               :height "100%"
+                               :anchor "center left")
+           :exclusive true
+           :wm-ignore true
+           :stacking "fg"
+           :focusable false
+           (bar))

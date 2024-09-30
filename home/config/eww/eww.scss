@@ -1,0 +1,64 @@
+* {
+    all: unset; // Unsets everything so you can style everything from scratch
+    background-color: transparent;
+}
+
+// Global Styles
+.bar {
+    color: #b0b4bc;
+    background-color: rgba(27, 27, 27, 0.5);
+    font-size: 12px;
+    font-family: ZedMono NF, Font Awesome;
+    padding: 0 6px;
+}
+
+// Styles on classes (see eww.yuck for more information)
+
+.sidestuff slider {
+  all: unset;
+  color: #ffd5cd;
+}
+
+.metric scale trough highlight {
+  all: unset;
+  background-color: #D35D6E;
+  color: #000000;
+  border-radius: 10px;
+}
+
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 50px;
+  min-width: 6px;
+  margin: 15px 0;
+}
+
+.label-ram {
+  font-size: large;
+}
+
+.clock {
+    margin: 15px 0;
+}
+
+.workspaces {
+    padding-top: 10px;
+    color: darkgrey;
+    .label {
+        font-size: 25px;
+        color: lightblue;
+        padding-left: 3px;
+    }
+    button {
+        font-size: 11px;
+        &:hover {
+            color: #D35D6E;
+        }
+    }
+}
+
+.active_ws {
+    color: #D35D6E;
+}
