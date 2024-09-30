@@ -1,15 +1,16 @@
 # audio.nix - Configuration File For Audio Setup
-{ config, ... }:
+{ pkgs, config, ... }:
 
 {
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  security.rtkit.enable      = true;
 
   services.pipewire = {
-    enable = true;
-    alsa.enable = true;
+    enable            = true;
+    alsa.enable       = true;
     alsa.support32Bit = true;
-    pulse.enable = true;
+    pulse.enable      = true;
   };
+
+  environment.systemPackages = with pkgs; [ alsa-utils ];
 }

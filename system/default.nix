@@ -10,5 +10,6 @@
     ./audio.nix
     ./networking.nix
     ./stylix.nix
+    ./steam.nix
   ];
 }

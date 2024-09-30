@@ -6,23 +6,22 @@
     enable = true;
     image = ./../assets/Wallpaper.png;
 
-    # Gruvbox Dark Medium Theme
-    # Reference: <https://github.com/tinted-theming/base16-schemes/blob/main/gruvbox-dark-medium.yaml>
+    # Gruvbox Dark Material Theme
     base16Scheme = {
-      base00 = "282828"; # ----
-      base01 = "3c3836"; # ---
-      base02 = "504945"; # --
-      base03 = "665c54"; # -
-      base04 = "bdae93"; # +
-      base05 = "d5c4a1"; # ++
-      base06 = "ebdbb2"; # +++
-      base07 = "fbf1c7"; # ++++
-      base08 = "fb4934"; # red
-      base09 = "fe8019"; # orange
-      base0A = "fabd2f"; # yellow
-      base0B = "b8bb26"; # green
-      base0C = "8ec07c"; # aqua/cyan
-      base0D = "83a598"; # blue
+      base00 = "242424"; # ----
+      base01 = "45403d"; # ---
+      base02 = "5a524c"; # --
+      base03 = "7c6f64"; # -
+      base04 = "a89984"; # +
+      base05 = "c5b18d"; # ++
+      base06 = "d4be98"; # +++
+      base07 = "ddc7a1"; # ++++
+      base08 = "ea6962"; # red
+      base09 = "e78a4e"; # orange
+      base0A = "d8a657"; # yellow
+      base0B = "a9b665"; # green
+      base0C = "89b482"; # aqua/cyan
+      base0D = "7daea3"; # blue
       base0E = "d3869b"; # purple
       base0F = "d65d0e"; # brown
     };
