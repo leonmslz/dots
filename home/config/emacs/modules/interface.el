@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; interface.el
+;; interface.el --- Interface Related Settings -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 ;; --- Packages ---
 
@@ -39,9 +41,11 @@
   :after vertico
   :ensure t
   :custom
-  (marginalia-align 'right)
+  (marginalia-align 'center)
   :init
   (marginalia-mode))
+
+(setq completion-styles '(basic substring partial-completion flex))
 
 (use-package consult
   :ensure t
@@ -55,3 +59,5 @@
 
 ;; --- Export ---
 (provide 'interface)
+
+;;; interface.el ends here

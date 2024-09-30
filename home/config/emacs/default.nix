@@ -9,6 +9,6 @@
         recursive = true;
       };
     };
-    packages = with pkgs; [ emacs29-pgtk ispell ];
+    packages = with pkgs; [ (emacs29-pgtk.override { withTreeSitter = true; }) ispell ];
   };
 }

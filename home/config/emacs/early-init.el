@@ -1,5 +1,11 @@
-;; -*- lexical-binding: t -*-
-;; early-init.el - Customizations That Take Effect During Emacs Startup
+;; early-init.el --- Customizations That Take Effect During Emacs Startup -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
+
+;; Emacs Default Frame Size
+(when window-system
+  (set-frame-size (selected-frame) 160 55))
 
 ;; Disable Unnecessary UI-Elements
 (menu-bar-mode   -1)
@@ -19,3 +25,5 @@
             (message "*** Emacs loaded in %s seconds with %d garbage collections."
                      (emacs-init-time "%.2f")
                      gcs-done)))
+
+;;; early-init.el ends here

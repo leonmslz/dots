@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; mode-line.el - Custom Mode-Line Configuration
+;; mode-line.el --- Custom Mode-Line Configuration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 (defgroup cef-mode-line nil
   "Custom Minimalistic Mode-Line."
@@ -334,3 +336,5 @@
 
 ;; --- Export ---
 (provide 'mode-line)
+
+;;; mode-line.el ends here

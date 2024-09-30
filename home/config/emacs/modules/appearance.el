@@ -1,11 +1,25 @@
-;; -*- lexical-binding: t -*-
-;; appearance.el - Theming And Appearance
+;; appearance.el --- Theming And Appearance -*- lexical-binding: t -*-
+;;; Commentary:
 
-;; Color-Scheme
-(use-package gruvbox-theme
-  :ensure t
-  :config
-  (load-theme 'gruvbox-dark-medium t))
+;;; Code:
+
+(load-theme 'gruvbox t)
+
+;; --- Tree-Sitter ---
+
+(when (treesit-available-p)
+
+  (use-package tree-sitter
+    :ensure t
+    :config
+    (global-tree-sitter-mode t))
+
+  (use-package tree-sitter-langs
+    :ensure t)
+
+  (add-hook 'prog-mode-hook #'tree-sitter-mode)
+  (add-hook 'prog-mode-hook #'tree-sitter-hl-mode)
+  )
 
 ;; => Font-Face
 
@@ -16,8 +30,8 @@
   "Reset Font Size To `cef-font-size'."
   (interactive)
   (set-face-attribute 'default
-                    nil
-                    :height cef-font-size))
+                      nil
+                      :height cef-font-size))
 
 ;; Apply Face-Attributes
 (set-face-attribute 'default

@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; languages.el - Support For Programming Languages
+;; languages.el --- Support For Programming Languages -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 ;; List With Languages To Install
 (setq cef-languages
@@ -15,7 +17,7 @@
         clojure-mode
         python-mode
         git-modes
-        ))
+        yuck-mode))
 
 ;; Install All Language-Modes
 (dolist (language cef-languages)

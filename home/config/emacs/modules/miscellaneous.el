@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; miscellaneous.el - Additional Custom Functions
+;; miscellaneous.el --- Additional Custom Functions -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 ;; --- Custom Functions ---
 
@@ -9,6 +11,7 @@
 ;; <https://stackoverflow.com/questions/12624815/how-to-automatically-kill-buffer-on-terminal-process-exit-in-emacs>
 (defadvice term-handle-exit
     (after term-kill-buffer-on-exit activate)
+  "Automaticly Kill Buffer When Exiting The Shell."
   (kill-buffer))
 
 (defun cef-open-terminal ()
@@ -81,6 +84,7 @@
 ;; => Auto-create Missing Directories
 ;; Reference: <https://emacsredux.com/blog/2022/06/12/auto-create-missing-directories/>
 (defun cef-auto-create-missing-dirs-find-file ()
+  "Auto-create Missing Directories."
   (let ((target-dir (file-name-directory buffer-file-name)))
     (unless (file-exists-p target-dir)
       (make-directory target-dir t))))
@@ -95,35 +99,15 @@
       (delete-active-region t)
     (delete-char 1)))
 
-;; => Dired Related Functions
-
-;; Open Dired In Place
-(defun cef-open-dired-current-directory ()
-  "Open Dired In Place."
+;; Transpose Paragraphs
+(defun cef-transpose-paragraphs ()
+  "Transpose Paragraphs."
   (interactive)
-  (dired "."))
+  (transpose-paragraphs 1)
+  (backward-paragraph))
 
-;; Open Dired In Home Folder
-(defun cef-open-dired-home-directory ()
-  "Open Dired In Home Folder."
-  (interactive)
-  (dired "~"))
-
-;; Go Up A Directory
-(defun cef-dired-directory-up ()
-  "Move Up A Directory."
-  (interactive)
-  (find-alternate-file ".."))
-
-;; Make Files Executable
-(defun cef-dired-toggle-execute-permission ()
-  "Toggle Execute-Permission Of All Selected Files."
-  (interactive)
-  (let ((files (dired-get-marked-files)))
-    (dolist (f files)
-      (when-let* ((cmode (file-modes f))
-                  (nmode (if (zerop (logand cmode #o111)) (logior cmode #o111) (logand cmode (lognot #o111)))))
-        (set-file-modes f nmode)))))
 
 ;; --- Export ---
 (provide 'miscellaneous)
+
+;;; miscellaneous.el ends here

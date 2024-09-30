@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; basics.el - Must Have Emacs Settings
+;; basics.el --- Must Have Emacs Settings -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 ;; --- Settings ---
 
@@ -9,10 +11,6 @@
   :config
   (unless (server-running-p)
     (server-start)))
-
-;; Emacs Default Frame Size
-(when window-system
-  (set-frame-size (selected-frame) 160 55))
 
 ;; UTF-8 As Default Encoding
 (set-language-environment    'utf-8)
@@ -41,7 +39,7 @@
 (setq initial-scratch-message "")
 
 ;; Change Default Scrolling Behavior
-(setq scroll-conservatively 10000)
+(setq scroll-conservatively 100000)
 (setq scroll-preserve-screen-position 'always)
 (setq mouse-wheel-progressive-speed nil)
 (setq scroll-step 1)
@@ -49,7 +47,7 @@
 
 ;; Disable Autosaves And Backups
 (setq-default auto-save-default nil)
-(setq-default create-lockfiles nil)
+(setq-default create-lockfiles  nil)
 (setq-default make-backup-files nil)
 
 ;; Stop Emacs From Editing The Configuration File
@@ -89,8 +87,8 @@
 (setq completion-auto-wrap t)
 
 ;; Make Background Transparent
-(set-frame-parameter nil 'alpha-background 75)
-(add-to-list 'default-frame-alist '(alpha-background . 75))
+(set-frame-parameter nil 'alpha-background 85)
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 
 ;; When Recentering Only Recenter To The Middle Of The Screen
 (setq recenter-positions '(middle))
@@ -102,31 +100,16 @@
 (setq confirm-kill-processes nil)
 
 ;; Simply Ask For Y Or N Instead Of Yes Or No
-(fset 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Flyspell
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
-;; --- Dired ---
-
-;; Only One Dired Buffer
-(setq dired-kill-when-opening-new-dired-buffer t)
-
-;; List Directories First
-(setq dired-listing-switches "-al --group-directories-first")
-
-;; Hide Details
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
-
-;; Recursive Delete And Copy
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
-
 ;; Deactivate Settings In Certain Major-Modes
 
 (defun cef-add-hook (f hooks)
-  "Add A Given Function f To Multiple Hooks."
+  "Add A Given Function F To Multiple HOOKS."
   (mapc (lambda (hook) (add-hook hook f))
         hooks))
 
@@ -134,6 +117,7 @@
               '(help-mode-hook
                 Info-mode-hook
                 term-mode-hook
+                eshell-mode-hook
                 dired-mode-hook))
 
 (cef-add-hook (lambda () (setq-local scroll-margin 0))
@@ -144,3 +128,5 @@
 
 ;; --- Export ---
 (provide 'basics)
+
+;;; basics.el ends here

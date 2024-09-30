@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; buffer-management.el - Buffer/Window Related Settings And Functions
+;; buffer-management.el --- Buffer/Window Related Settings And Functions -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 ;; --- Settings ---
 
@@ -28,7 +30,7 @@
          (display-buffer-reuse-mode-window
           display-buffer-at-bottom)
          ;; Additional Parameters
-         (window-height . 0.33)
+         (window-height . 0.25)
          (dedicated . t)
          (body-function . select-window))
 
@@ -37,9 +39,6 @@
          ;; Display Functions
          (display-buffer-in-side-window)
          ;; Additional Parameters
-         (side . right)
-         (slot . 0)
-         (window-width . 0.33)
          (body-function . select-window))
 
         ;; Completion Buffer
@@ -103,7 +102,7 @@
 (require 'windmove)
 
 (defun cef-move-window (direction)
-  "Helper Function To Move A Window In The Speciefied Direction."
+  "Helper Function To Move A Window In The Speciefied Direction ('up 'down 'left 'right)."
 
   (let (other-window-p
         buffer-this-buffer)
@@ -156,3 +155,5 @@
 
 ;; --- Export ---
 (provide 'buffer-management)
+
+;;; buffer-management.el ends here

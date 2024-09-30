@@ -1,5 +1,7 @@
-;; -*- lexical-binding: t -*-
-;; package-management.el - Package Management
+;; package-management.el --- Package Management -*- lexical-binding: t -*-
+;;; Commentary:
+
+;;; Code:
 
 (require 'package)
 
@@ -29,3 +31,5 @@
 
 ;; --- Export ---
 (provide 'package-management)
+
+;;; package-management.el ends here
