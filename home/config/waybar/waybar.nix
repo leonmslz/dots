@@ -17,9 +17,9 @@
         "hyprland/workspaces"
       ];
 
-      modules-center = [
-        "wlr/taskbar"
-      ];
+      # modules-center = [
+      #   "wlr/taskbar"
+      # ];
 
       modules-right = [
         "tray"

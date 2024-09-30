@@ -1,5 +1,5 @@
 # firefox.nix - Nix Declarative Configuration File For Firefox Web Browser
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.firefox = {
@@ -7,6 +7,18 @@
     package = pkgs.firefox;
 
     profiles.leon = {
+
+      extensions = with config.nur.repos.rycee.firefox-addons; [
+        ublock-origin
+        proton-pass
+        return-youtube-dislikes
+        betterttv
+        gruvbox-dark-theme
+      ];
+
+      settings = {
+        "intl.locale.requested" = "de,en-US";
+      };
 
       search = {
         default = "Startpage";
@@ -43,10 +55,8 @@
             }];
             definedAliases = [ "!wiki" ];
           };
-
         };
       };
-
     };
   };
 }

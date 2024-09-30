@@ -2,7 +2,6 @@
 { inputs, config, lib, pkgs, ... }:
 
 let
-
   # Hyprland Plugins
   hyprplugins = inputs.hyprland-plugins.packages.${pkgs.system};
 in
@@ -103,6 +102,8 @@ in
 
         # Except ...
         "maximize, class:^(firefox)$"
+        "tile, class:^(emacs)$"
+        "tile, class:^(Alacritty)$"
         "maximize, class:^(Cider)$"
 
         # Size Adjustments
@@ -190,9 +191,17 @@ in
       # Issue due to Hyprland (v0.40.0) and Nvidia-Drivers
       monitor = [ "Unknown-1,disable" ];
 
+      # Issue with explicit Sync in Hyprland (v0.42.0) due to Nvidia-Drivers
+      # <https://hyprland.org/news/update42/>
+      render = {
+        explicit_sync = false;
+      };
+
       # --- Autostart ---
       exec-once = [
-        "${pkgs.waybar}/bin/waybar &"                  # Waybar Status-Bar
+        # "${pkgs.waybar}/bin/waybar &"                  # Waybar Status-Bar
+        "${pkgs.eww}/bin/eww daemon &"                 # Eww Daemon
+        "${pkgs.eww}/bin/eww open bar"                 # Eww Status-Bar
         "${pkgs.hyprpaper}/bin/hyprpaper &"            # Hyprpaper Wallpaper Utility
         "${pkgs.networkmanagerapplet}/bin/nm-applet &" # Network-Manager Applet
         "${pkgs.blueman}/bin/blueman-applet &"         # Bluetooth-Manager Applet

@@ -126,12 +126,11 @@ in
 {
   programs.rofi = {
     enable = true;
+    package = pkgs.rofi-wayland;
 
-    package = pkgs.rofi-wayland.override {
-      plugins = with pkgs; [
-        (rofi-emoji.override { rofi-unwrapped = rofi-wayland-unwrapped; })
-      ];
-    };
+    plugins = with pkgs; [
+      rofi-emoji-wayland
+    ];
 
     extraConfig = {
       modes = [

@@ -2,6 +2,7 @@
 {
   imports = [
     ./emacs
+    ./eww
     ./zsh
     ./alacritty/alacritty.nix
     ./hypr/hyprland.nix
