@@ -23,8 +23,8 @@
       # firefox # Browser
       # rofi-wayland # Program-Launcher
       # waybar # Status-Bar
-      gnome.eog # Image-Viewer
-      gnome.nautilus # File-Manager
+      eog # Image-Viewer
+      nautilus # File-Manager
       evince # PDF-Viewer
       # qrencode # QR-Code Utility
       prismlauncher # Minecraft-Launcher

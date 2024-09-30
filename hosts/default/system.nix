@@ -59,10 +59,20 @@
       gcc
       glib
       go
-      python3
       libtool
       slurp
       grim
+      bottles
+      ghc
+      libreoffice
+      eww
+      jq
+      socat
+      gnumake
+
+      (python3.withPackages (p: with p; [
+        rich
+      ]))
     ]);
 
   system.stateVersion = "23.11";
